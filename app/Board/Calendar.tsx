@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import Calendar from 'react-calendar';
-import './Calendar.css'
+import './Calendar.css';
 
 export default function CustomCalendar() {
   const [date, setDate] = useState<Date | null>(new Date());
@@ -14,7 +14,7 @@ export default function CustomCalendar() {
         value={date}
         locale="tr-TR"
         calendarType="gregory"
-        className="custom-calendar"
+        className="modern-calendar"
       />
     </div>
   );

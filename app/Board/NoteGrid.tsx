@@ -74,35 +74,50 @@ export default function NoteGrid({
         ))}
         
         {!isLoading && (
-          <motion.div
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            whileHover={{ scale: 1.02 }}
-            whileTap={{ scale: 0.98 }}
-            onClick={onAddNote}
-            className="col-span-1"
-          >
+        <motion.div
+          initial={{ opacity: 0, scale: 0.9 }}
+          animate={{ opacity: 1, scale: 1 }}
+          whileHover={{ 
+            y: -5,
+            boxShadow: '0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 5px 10px -5px rgba(0, 0, 0, 0.04)'
+          }}
+          className="
+            w-full aspect-square max-w-[200px] rounded-xl 
+            border border-white/70
+            bg-white/40
+            backdrop-blur-md 
+            flex flex-col items-center justify-center 
+            cursor-pointer text-center 
+            overflow-hidden
+            group
+          "
+          style={{
+            boxShadow: '0 2px 4px 0 rgba(0, 0, 0, 0.05)'
+          }}
+          onClick={onAddNote}
+        >
+          {/* Content - matches NoteCard's content area */}
+          <div className="flex flex-col items-center justify-center flex-1 w-full px-4 py-6">
             <div className="
-              w-full aspect-square max-w-full
-              rounded-xl border border-white/70 bg-white/70
-              backdrop-blur-md shadow-sm hover:shadow-md
-              transition-all flex flex-col items-center justify-center
-              text-gray-500 hover:text-indigo-600 cursor-pointer group
-              p-2 sm:p-0 opacity-70 
+              bg-indigo-100 w-10 h-10 rounded-full
+              flex items-center justify-center
+              mb-3 group-hover:bg-indigo-200 transition-colors
             ">
-              <div className="bg-indigo-100 w-8 h-8 sm:w-10 sm:h-10 rounded-full flex items-center justify-center mb-1 sm:mb-2 group-hover:bg-indigo-200 transition-colors">
               <FiPlus className="
-                                text-indigo-600
-                                text-lg xs:text-xl sm:text-2xl
-                                transition-transform group-hover:rotate-90
-                              " />             
-             </div>
-              <span className="font-medium text-xs sm:text-sm md:text-base text-center">
-                Add Note
-              </span>
+                text-indigo-600
+                text-xl
+                transition-transform group-hover:rotate-90
+              "/>
             </div>
-          </motion.div>
-        )}
+            <p className="text-gray-800 font-medium group-hover:text-indigo-600 transition-colors">
+              Add Note
+            </p>
+          </div>
+
+          {/* Bottom accent bar - matches NoteCard's hover effect */}
+          <div className="absolute bottom-0 w-full h-1.5 bg-gradient-to-r from-indigo-400/80 to-purple-400/80 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+        </motion.div>
+      )}
       </div>
     </div>
   );

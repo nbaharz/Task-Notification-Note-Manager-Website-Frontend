@@ -2,13 +2,13 @@
 import { useState } from 'react';
 import BoardHeader from './BoardHeader';
 import NoteGrid from './NoteGrid';
-import ToDoPanel from './ToDoPanel';
 import AddNoteModal from '@/ui/Note/AddNoteModal';
 import ViewNoteModal from '@/ui/Note/ViewNoteModal';
 import AllNotesModal from '@/ui/Note/AllNotesModal';
 import { useNotes } from './useNotes';
 import { AnimatePresence } from 'framer-motion';
 import CustomCalendar from './Calendar';
+import ToDoList from '@/ui/ToDoList/toDoList';
 
 export default function NoteBoard() {
   const {
@@ -43,9 +43,11 @@ export default function NoteBoard() {
           onShowAllNotes={() => setShowAllNotesModal(true)}
         />
         
-        <div className="w-full lg:w-[350px] flex flex-col gap-6">
-        <ToDoPanel />
-        <CustomCalendar/>
+        <div className="w-full sm:w-[500px] md:w-[400px] lg:w-[350px] xl:w-[300px] gap-6">
+        <ToDoList/>
+        <div className="mt-6">
+          <CustomCalendar />
+        </div>
         </div>
       </section>
 
