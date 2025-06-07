@@ -103,26 +103,33 @@ export default function ToDoList() {
                   {task.completed && <FiCheck className="text-white text-xs" />}
                 </button>
 
-                {task.isEditing ? (
-                  <input
-                    ref={editInputRef}
-                    type="text"
-                    defaultValue={task.text}
-                    onBlur={() => handleEditBlur(task.id)}
-                    onKeyDown={(e) => e.key === 'Enter' && handleEditBlur(task.id)}
-                    className="flex-1 bg-transparent outline-none"
-                    autoFocus
-                  />
-                ) : (
-                  <span
-                    onClick={() => handleTaskClick(task)}
-                    className={`flex-1 break-words whitespace-pre-wrap text-left w-full min-w-0 ${
-                      task.completed ? 'line-through text-gray-400' : 'text-gray-700'
-                    }`}
-                  >
-                    {task.text}
-                  </span>
-                )}
+              {task.isEditing ? (
+              <input
+                ref={editInputRef}
+                type="text"
+                value={task.text}
+                onChange={(e) =>
+                  setTasks(tasks.map(t =>
+                    t.id === task.id ? { ...t, text: e.target.value } : t
+                  ))
+                }
+                onBlur={() => handleEditBlur(task.id)}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter') handleEditBlur(task.id);
+                }}
+                className="flex-1 bg-transparent outline-none"
+                autoFocus
+              />
+            ) : (
+              <span
+                onClick={() => handleTaskClick(task)}
+                className={`flex-1 break-words whitespace-pre-wrap text-left w-full min-w-0 ${
+                  task.completed ? 'line-through text-gray-400' : 'text-gray-700'
+                }`}
+              >
+                {task.text}
+              </span>
+            )}
 
                 <button
                   onClick={() => deleteTask(task.id)}
