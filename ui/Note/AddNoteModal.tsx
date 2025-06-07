@@ -1,6 +1,6 @@
 'use client';
+import { motion } from 'framer-motion';
 import { FiX } from 'react-icons/fi';
-import ModalWrapper from '../ModalWrapper';
 
 // interface nesnenin sahip olmasi gereken structure tanimlar.
 // component props icin interface yapisi tercih edilir.
@@ -13,11 +13,20 @@ interface AddNoteModalProps {
 
 export default function AddNoteModal({ newNote, setNewNote, onSave, onClose }: AddNoteModalProps) {
   return (
-    <ModalWrapper onClose={onClose} maxWidth="max-w-[700px]" maxHeight="h-[800px]">
-      <div className="p-6 flex flex-col h-full">
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      className="fixed inset-0 bg-black/20 backdrop-blur-sm flex justify-center items-center z-50 p-4" //modal olusturuldu
+    >
+      <motion.div
+        initial={{ y: 20, scale: 0.98 }}
+        animate={{ y: 0, scale: 1 }}
+        className="bg-white w-full max-w-[700px] h-[800px] rounded-xl shadow-lg border border-gray-100 p-6 flex flex-col"
+      >
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-lg font-medium text-gray-700">New Note</h2>
-          <button
+          <button 
             onClick={onClose}
             className="text-gray-400 hover:text-gray-600 transition-colors"
           >
@@ -56,7 +65,7 @@ export default function AddNoteModal({ newNote, setNewNote, onSave, onClose }: A
             Save
           </button>
         </div>
-      </div>
-    </ModalWrapper>
+      </motion.div>
+    </motion.div>
   );
 }
