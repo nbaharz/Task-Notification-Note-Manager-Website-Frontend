@@ -1,14 +1,16 @@
-'use client'
-import { useState } from 'react';
+'use client';
+import { useState,useEffect } from 'react';
 import BoardHeader from './BoardHeader';
-import NoteGrid from './NoteGrid';
+import NoteGrid from '../../ui/Note/NoteGrid';
 import AddNoteModal from '@/ui/Note/AddNoteModal';
 import ViewNoteModal from '@/ui/Note/ViewNoteModal';
 import AllNotesModal from '@/ui/Note/AllNotesModal';
-import { useNotes } from './useNotes';
+import { useNotes } from '../../hooks/useNotes';
 import { AnimatePresence } from 'framer-motion';
-import CustomCalendar from './Calendar';
+import CustomCalendar from '../../ui/Calendar/Calendar';
 import ToDoList from '@/ui/ToDoList/toDoList';
+import ExternalServices from '@/ui/ExternalServices/ExternalService';
+
 
 export default function NoteBoard() {
   const {
@@ -22,10 +24,16 @@ export default function NoteBoard() {
     selectedNote,
     setSelectedNote
   } = useNotes();
-  
+
   const [showModal, setShowModal] = useState(false);
   const [showViewModal, setShowViewModal] = useState(false);
   const [showAllNotesModal, setShowAllNotesModal] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const timer = setTimeout(() => setIsLoading(false), 1000); // ⏱️ 1 saniye skeleton göster
+    return () => clearTimeout(timer);
+  }, []);
 
   return (
     <main className="p-4 sm:p-6 md:p-8 lg:p-12 min-h-screen bg-gradient-to-r from-purple-200 to-yellow-100 text-gray-900 font-sans">
@@ -41,21 +49,26 @@ export default function NoteBoard() {
           }}
           onDeleteNote={deleteNote}
           onShowAllNotes={() => setShowAllNotesModal(true)}
+          isLoading={isLoading}
         />
         
-        <div className="w-full sm:w-[500px] md:w-[400px] lg:w-[350px] xl:w-[300px] gap-6">
-        <ToDoList/>
-        <div className="mt-6">
-          <CustomCalendar />
+        <div className="w-full max-w-[220px] justify-center lg:justify-start">
+          <ExternalServices />
         </div>
-        </div>
+
+        <div className="w-full lg:w-[30%] flex flex-col gap-6">
+        <ToDoList />
+        <CustomCalendar />
+      </div>
       </section>
 
       <AnimatePresence>
         {showModal && (
           <AddNoteModal
-            newNote={newNote}
-            setNewNote={setNewNote}
+            newNote={{ title: newNote.title, content: newNote.content }}
+            setNewNote={({ title, content }) =>
+              setNewNote({ ...newNote, title, content })
+            }
             onSave={() => {
               addNote();
               setShowModal(false);
