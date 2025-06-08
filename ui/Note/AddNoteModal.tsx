@@ -57,9 +57,6 @@ export default function AddNoteModal({ newNote, setNewNote, onSave, onClose }: A
             onChange={(e) => setNewNote({ ...newNote, content: e.target.value })}
             className="w-full h-full p-4 text-gray-700 placeholder:text-gray-400 text-base outline-none resize-none"
           />
-          <div className="absolute bottom-4 right-4 text-xs text-gray-400">
-            {newNote.content.length}/1000
-          </div>
         </div>
 
         {/* Responsive footer with action buttons */}

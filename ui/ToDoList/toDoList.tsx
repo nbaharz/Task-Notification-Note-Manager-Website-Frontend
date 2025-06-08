@@ -59,7 +59,7 @@ export default function ToDoList() {
   };
 
   return (
-    <div className="rounded-xl border border-white/50 bg-white/70 backdrop-blur-md transition-all flex flex-col items-center justify-center cursor-pointer text-center overflow-hidden group max-w-md mx-auto p-6 shadow-sm">
+<div className="ml-auto w-full max-w-[400px] max-h-[450px] rounded-xl border border-white/50 bg-white/70 backdrop-blur-md transition-all flex flex-col items-center text-left overflow-hidden p-6 shadow-sm">
       <div className="mb-6">
         <h2 className="text-2xl font-semibold text-gray-800 mb-1">Tasks</h2>
         <p className="text-sm text-gray-500">
