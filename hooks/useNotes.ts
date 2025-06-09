@@ -39,27 +39,20 @@ export function useNotes() {
     }
   }, [notes]);
 
-  const addNote = useCallback(() => {
-    if (!newNote.title.trim()) {
-      setError('Note title cannot be empty');
-      return;
-    }
+ const addNote = useCallback((note: Note) => {
+  if (!note.title.trim()) {
+    setError('Note title cannot be empty');
+    return;
+  }
 
-    if (notes.some(note => note.title === newNote.title)) {
-      setError('A note with this title already exists');
-      return;
-    }
+  if (notes.some(n => n.title === note.title)) {
+    setError('A note with this title already exists');
+    return;
+  }
 
-    setError(null);
-    setNotes(prevNotes => [
-      ...prevNotes, 
-      { 
-        ...newNote, 
-        pinned: false // Default to not pinned
-      }
-    ]);
-    setNewNote({ title: '', content: '' });
-  }, [newNote, notes]);
+  setError(null);
+  setNotes(prev => [...prev, note]);
+}, [notes]);
 
   const deleteNote = useCallback((titleToDelete: string) => {
     setNotes(prevNotes => prevNotes.filter(note => note.title !== titleToDelete));
@@ -95,17 +88,15 @@ export function useNotes() {
     );
   }, []);
   return {
-    notes,
-    isLoading,
-    error,
-    addNote,
-    deleteNote,
-    updateNote,
-    togglePin,
-    newNote,
-    setNewNote,
-    selectedNote,
-    setSelectedNote,
-    clearError: () => setError(null)
+  notes,
+  isLoading,
+  error,
+  addNote,             // ✅ parametreli hâl
+  deleteNote,
+  updateNote,
+  togglePin,
+  selectedNote,
+  setSelectedNote,
+  clearError: () => setError(null)
   };
 }

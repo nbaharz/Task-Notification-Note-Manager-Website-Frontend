@@ -1,3 +1,5 @@
+'use client';
+import { useState, useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
 import { FiPlus, FiChevronRight } from 'react-icons/fi';
 import NoteCard from '@/ui/Note/NoteCard';
@@ -6,7 +8,7 @@ import { Note } from '../../types/types';
 
 interface NoteGridProps {
   notes: Note[];
-  onAddNote: () => void;
+  onAddNote: (title: string) => void;
   onViewNote: (note: Note) => void;
   onDeleteNote: (title: string) => void;
   onShowAllNotes: () => void;
@@ -21,14 +23,25 @@ export default function NoteGrid({
   onShowAllNotes,
   isLoading = false
 }: NoteGridProps) {
+  const [isAddingNote, setIsAddingNote] = useState(false);
+  const addNoteRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (isAddingNote && addNoteRef.current && !addNoteRef.current.contains(e.target as Node)) {
+        setIsAddingNote(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, [isAddingNote]);
+
   const getDisplayNotes = (): (Note | null)[] => {
     if (isLoading) {
-      // Show 4 skeleton cards when loading
-    const pinnedCount = notes.filter(note => note.pinned).length;
-    // Return at least 1 skeleton, maximum 5
-    const skeletonCount = Math.min(Math.max(1, pinnedCount), 5);
-    return Array(skeletonCount).fill(null);    }
-    // Show pinned notes (max 5) when not loading
+      const pinnedCount = notes.filter(note => note.pinned).length;
+      const skeletonCount = Math.min(Math.max(1, pinnedCount), 5);
+      return Array(skeletonCount).fill(null);
+    }
     return notes.filter(note => note.pinned).slice(0, 5);
   };
 
@@ -36,7 +49,6 @@ export default function NoteGrid({
 
   return (
     <div className="w-full lg:w-[30%] space-y-6">
-      {/* Header section */}
       {!isLoading && (
         <div className="flex justify-between items-center">
           <h2 className="text-lg sm:text-xl font-semibold text-gray-800">Quick Notes</h2>
@@ -52,7 +64,6 @@ export default function NoteGrid({
         </div>
       )}
 
-      {/* Notes grid */}
       <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-2 xl:grid-cols-3 gap-3 sm:gap-4">
         {displayNotes.map((note, index) => (
           isLoading || note === null ? (
@@ -63,7 +74,6 @@ export default function NoteGrid({
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: index * 0.1 }}
-              // transition={{ duration: 0.3 }}
               className="col-span-1 h-full"
             >
               <NoteCard
@@ -75,9 +85,27 @@ export default function NoteGrid({
             </motion.div>
           )
         ))}
-        
+
+        {/* Add Note Mode */}
+        {isAddingNote && (
+          <motion.div
+            ref={addNoteRef}
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="col-span-1"
+          >
+            <NoteCard
+              isNew
+              onTitleSubmit={(title) => {
+                onAddNote(title);
+                setIsAddingNote(false);
+              }}
+            />
+          </motion.div>
+        )}
+
         {/* Add Note Button */}
-        {!isLoading && (
+        {!isLoading && !isAddingNote && (
           <motion.div
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
@@ -95,7 +123,7 @@ export default function NoteGrid({
               overflow-hidden
               group
             "
-            onClick={onAddNote}
+            onClick={() => setIsAddingNote(true)}
             role="button"
             aria-label="Add new note"
           >
