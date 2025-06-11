@@ -1,7 +1,8 @@
 'use client';
+
 import { useState, useEffect, useRef } from 'react';
-import { motion } from 'framer-motion';
-import { FiPlus, FiChevronRight } from 'react-icons/fi';
+import { motion, AnimatePresence } from 'framer-motion';
+import { FiPlus } from 'react-icons/fi';
 import NoteCard from '@/ui/Note/NoteCard';
 import NoteCardSkeleton from '@/ui/Note/NoteCardSkeleton';
 import { Note } from '../../types/types';
@@ -15,20 +16,39 @@ interface NoteGridProps {
   isLoading?: boolean;
 }
 
-export default function NoteGrid({ 
-  notes, 
-  onAddNote, 
-  onViewNote, 
+export default function NoteGrid({
+  notes,
+  onAddNote,
+  onViewNote,
   onDeleteNote,
   onShowAllNotes,
   isLoading = false
 }: NoteGridProps) {
   const [isAddingNote, setIsAddingNote] = useState(false);
+  const [showAllPinned, setShowAllPinned] = useState(false);
+  const [showAddButton, setShowAddButton] = useState(false);
   const addNoteRef = useRef<HTMLDivElement>(null);
+
+  const pinnedNoteCount = notes.filter(n => n.pinned).length;
+
+  const getDisplayNotes = (): (Note | null)[] => {
+    if (isLoading) {
+      return Array(6).fill(null); // 👈 Hızlı ve sabit 6 skeleton
+    }
+
+    const pinnedNotes = notes.filter(note => note.pinned);
+    return showAllPinned ? pinnedNotes : pinnedNotes.slice(0, 5);
+  };
+
+  const displayNotes = getDisplayNotes();
 
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
-      if (isAddingNote && addNoteRef.current && !addNoteRef.current.contains(e.target as Node)) {
+      if (
+        isAddingNote &&
+        addNoteRef.current &&
+        !addNoteRef.current.contains(e.target as Node)
+      ) {
         setIsAddingNote(false);
       }
     };
@@ -36,37 +56,24 @@ export default function NoteGrid({
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, [isAddingNote]);
 
-  const getDisplayNotes = (): (Note | null)[] => {
-    if (isLoading) {
-      const pinnedCount = notes.filter(note => note.pinned).length;
-      const skeletonCount = Math.min(Math.max(1, pinnedCount), 5);
-      return Array(skeletonCount).fill(null);
-    }
-    return notes.filter(note => note.pinned).slice(0, 5);
-  };
-
-  const displayNotes = getDisplayNotes();
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setShowAddButton(true);
+    }, 300); // Daha kısa gecikme
+    return () => clearTimeout(timer);
+  }, [displayNotes, showAllPinned]);
 
   return (
     <div className="w-full lg:w-[30%] space-y-6">
       {!isLoading && (
-        <div className="flex justify-between items-center">
-          <h2 className="text-lg sm:text-xl font-semibold text-gray-800">Quick Notes</h2>
-          {notes.length > 0 && (
-            <button 
-              onClick={onShowAllNotes}
-              className="flex items-center text-xs sm:text-sm text-indigo-600 hover:text-indigo-800 group"
-              aria-label="View all notes"
-            >
-              See All <FiChevronRight className="ml-1 group-hover:translate-x-0.5 transition-transform" />
-            </button>
-          )}
-        </div>
+        <h2 className="text-lg sm:text-xl font-semibold text-gray-800">
+          Quick Notes
+        </h2>
       )}
 
       <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-2 xl:grid-cols-3 gap-3 sm:gap-4">
-        {displayNotes.map((note, index) => (
-          isLoading || note === null ? (
+        {displayNotes.map((note, index) =>
+          note === null ? (
             <NoteCardSkeleton key={`skeleton-${index}`} />
           ) : (
             <motion.div
@@ -84,34 +91,37 @@ export default function NoteGrid({
               />
             </motion.div>
           )
-        ))}
-
-        {/* Add Note Mode */}
-        {isAddingNote && (
-          <motion.div
-            ref={addNoteRef}
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="col-span-1"
-          >
-            <NoteCard
-              isNew
-              onTitleSubmit={(title) => {
-                onAddNote(title);
-                setIsAddingNote(false);
-              }}
-            />
-          </motion.div>
         )}
 
-        {/* Add Note Button */}
-        {!isLoading && !isAddingNote && (
+        <AnimatePresence>
+          {isAddingNote && (
+            <motion.div
+              ref={addNoteRef}
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: 10 }}
+              className="col-span-1"
+            >
+              <NoteCard
+                isNew
+                onTitleSubmit={(title) => {
+                  onAddNote(title);
+                  setIsAddingNote(false);
+                }}
+              />
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        {!isLoading && !isAddingNote && showAddButton && (
           <motion.div
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
-            whileHover={{ 
+            transition={{ delay: 0.3 }}
+            whileHover={{
               y: -5,
-              boxShadow: '0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 5px 10px -5px rgba(0, 0, 0, 0.04)'
+              boxShadow:
+                '0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 5px 10px -5px rgba(0, 0, 0, 0.04)'
             }}
             className="
               w-full aspect-square max-w-[200px] rounded-xl 
@@ -137,7 +147,7 @@ export default function NoteGrid({
                   text-indigo-600
                   text-xl
                   transition-transform group-hover:rotate-90
-                "/>
+                " />
               </div>
               <p className="text-gray-800 font-medium group-hover:text-indigo-600 transition-colors">
                 Add Note
@@ -147,6 +157,21 @@ export default function NoteGrid({
           </motion.div>
         )}
       </div>
+
+      {!isLoading && pinnedNoteCount > 5 && (
+        <div className="text-center">
+          <button
+            onClick={() => {
+              setShowAllPinned(prev => !prev);
+              setShowAddButton(false);
+              setTimeout(() => setShowAddButton(true), 500);
+            }}
+            className="text-indigo-600 text-sm hover:text-indigo-800 mt-2"
+          >
+            {showAllPinned ? 'Show Less' : 'See All'}
+          </button>
+        </div>
+      )}
     </div>
   );
 }
