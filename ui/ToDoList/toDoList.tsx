@@ -2,9 +2,9 @@
 
 import { useState, useEffect, useRef } from 'react';
 import { FiTrash2, FiCheck, FiChevronDown, FiChevronUp, FiPlus } from 'react-icons/fi';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence, LayoutGroup } from 'framer-motion';
 import TaskDetailModal from './TaskDetailModal';
-import TaskSkeleton from './ToDoListSkeleton'; // <- burası önemli
+import TaskSkeleton from './ToDoListSkeleton';
 
 interface Task {
   id: number;
@@ -21,6 +21,7 @@ export default function ToDoList() {
   const [modalTask, setModalTask] = useState<Task | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const inputRef = useRef<HTMLInputElement>(null);
+  const listRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     setTimeout(() => {
@@ -28,7 +29,7 @@ export default function ToDoList() {
       if (stored) setTasks(JSON.parse(stored));
       setIsLoading(false);
       inputRef.current?.focus();
-    }, 300); // simüle edilen yükleme
+    }, 300);
   }, []);
 
   useEffect(() => {
@@ -100,12 +101,14 @@ export default function ToDoList() {
         <AnimatePresence initial={false}>
           {showTasks && (
             <motion.div
+              layout
               key="task-panel"
               initial={{ height: 0, opacity: 0 }}
               animate={{ height: 'auto', opacity: 1 }}
               exit={{ height: 0, opacity: 0 }}
-              transition={{ duration: 0.3 }}
+              transition={{ duration: 0.3, ease: "easeInOut" }}
               className="overflow-hidden px-6 pb-4"
+              ref={listRef}
             >
               <div className="pt-4 relative">
                 <input
@@ -127,56 +130,79 @@ export default function ToDoList() {
                   ))}
                 </div>
               ) : tasks.length > 0 ? (
-                <motion.ul className="space-y-3 mt-4 max-h-[350px] overflow-y-auto pr-2 pb-2">
-                  <AnimatePresence>
-                    {tasks.map(task => (
-                      <motion.li
-                        key={task.id}
-                        initial={{ opacity: 0, y: 10 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        exit={{ opacity: 0, height: 0 }}
-                        className="relative bg-gray-300/10 rounded-lg shadow-sm border border-gray-100 overflow-hidden transition-all hover:shadow-md"
-                      >
-                        <div className={`absolute top-0 left-0 w-full h-1 ${getPriorityColor(task.priority)}`} />
-                        <div className="flex items-start p-3">
-                          <button
-                            onClick={() => toggleComplete(task.id)}
-                            className={`w-5 h-5 flex-shrink-0 flex items-center justify-center rounded-full border mr-3 mt-1 ${
-                              task.completed ? 'bg-indigo-500 border-indigo-500' : 'border-gray-300'
-                            }`}
-                          >
-                            {task.completed && <FiCheck className="text-white text-xs" />}
-                          </button>
-
-                          <div 
-                            className="flex-1 min-w-0 cursor-pointer py-1" 
-                            onClick={() => openModal(task)}
-                          >
-                            <span className={`block break-words whitespace-pre-wrap text-left w-full min-w-0 ${
-                              task.completed ? 'line-through text-gray-400' : 'text-gray-700'
-                            }`}>
-                              {task.text}
-                            </span>
-                            {task.description && (
-                              <p className="text-sm text-gray-500 mt-1 line-clamp-2">
-                                {task.description}
-                              </p>
-                            )}
-                          </div>
-
-                          <div className="flex gap-1">
+                <LayoutGroup>
+                  <motion.ul 
+                    layout 
+                    className="space-y-3 mt-4 pr-2 pb-2"
+                    style={{
+                      maxHeight: tasks.length > 5 ? '350px' : 'none',
+                      overflowY: tasks.length > 5 ? 'auto' : 'hidden'
+                    }}
+                  >
+                    <AnimatePresence>
+                      {tasks.map(task => (
+                        <motion.li
+                          key={task.id}
+                          layout
+                          initial={{ opacity: 0, height: 0 }}
+                          animate={{ 
+                            opacity: 1, 
+                            height: 'auto',
+                            transition: { duration: 0.3 }
+                          }}
+                          exit={{ 
+                            opacity: 0, 
+                            height: 0,
+                            transition: { duration: 0.3 }
+                          }}
+                          transition={{ 
+                            type: "spring", 
+                            damping: 25, 
+                            stiffness: 300 
+                          }}
+                          className="relative bg-gray-300/10 rounded-lg shadow-sm border border-gray-100 overflow-hidden"
+                        >
+                          <div className={`absolute top-0 left-0 w-full h-1 ${getPriorityColor(task.priority)}`} />
+                          <div className="flex items-start p-3">
                             <button
-                              onClick={() => deleteTask(task.id)}
-                              className="text-gray-400 hover:text-red-500 flex-shrink-0 p-1"
+                              onClick={() => toggleComplete(task.id)}
+                              className={`w-5 h-5 flex-shrink-0 flex items-center justify-center rounded-full border mr-3 mt-1 ${
+                                task.completed ? 'bg-indigo-500 border-indigo-500' : 'border-gray-300'
+                              }`}
                             >
-                              <FiTrash2 size={16} />
+                              {task.completed && <FiCheck className="text-white text-xs" />}
                             </button>
+
+                            <div 
+                              className="flex-1 min-w-0 cursor-pointer py-1" 
+                              onClick={() => openModal(task)}
+                            >
+                              <span className={`block break-words whitespace-pre-wrap text-left w-full min-w-0 ${
+                                task.completed ? 'line-through text-gray-400' : 'text-gray-700'
+                              }`}>
+                                {task.text}
+                              </span>
+                              {task.description && (
+                                <p className="text-sm text-gray-500 mt-1 line-clamp-2">
+                                  {task.description}
+                                </p>
+                              )}
+                            </div>
+
+                            <div className="flex gap-1">
+                              <button
+                                onClick={() => deleteTask(task.id)}
+                                className="text-gray-400 hover:text-red-500 flex-shrink-0 p-1"
+                              >
+                                <FiTrash2 size={16} />
+                              </button>
+                            </div>
                           </div>
-                        </div>
-                      </motion.li>
-                    ))}
-                  </AnimatePresence>
-                </motion.ul>
+                        </motion.li>
+                      ))}
+                    </AnimatePresence>
+                  </motion.ul>
+                </LayoutGroup>
               ) : null}
             </motion.div>
           )}
