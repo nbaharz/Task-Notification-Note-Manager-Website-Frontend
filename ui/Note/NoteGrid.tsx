@@ -21,7 +21,6 @@ export default function NoteGrid({
   onAddNote,
   onViewNote,
   onDeleteNote,
-  onShowAllNotes,
   isLoading = false
 }: NoteGridProps) {
   const [isAddingNote, setIsAddingNote] = useState(false);
@@ -64,7 +63,7 @@ export default function NoteGrid({
   }, [displayNotes, showAllPinned]);
 
   return (
-    <div className="w-full lg:w-[30%] space-y-6">
+    <div className="w-full lg:w-auto space-y-6">
       {!isLoading && (
         <h2 className="text-lg sm:text-xl font-semibold text-gray-800">
           Quick Notes

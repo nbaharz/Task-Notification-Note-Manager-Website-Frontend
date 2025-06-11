@@ -82,7 +82,7 @@ export default function ToDoList() {
 
   return (
     <>
-      <div className="ml-auto w-full max-w-[600px] rounded-xl border border-white bg-white backdrop-blur-md transition-all shadow-sm overflow-hidden">
+      <div className="ml-auto w-full max-w-full lg:max-w-[600px] rounded-xl border border-white bg-white backdrop-blur-md transition-all shadow-sm overflow-hidden">
         <div className="flex items-center justify-between p-4 border-b border-white/40">
           <h2 className="text-lg font-semibold text-gray-800 flex items-center gap-2">
             <span className="bg-indigo-100 text-indigo-800 rounded-full w-6 h-6 flex items-center justify-center text-sm">
