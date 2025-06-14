@@ -11,7 +11,7 @@ export default function CustomCalendar() {
   const [showCalendar, setShowCalendar] = useState(false);
 
   return (
-    <div className="ml-auto w-full h-full max-w-[400px] rounded-xl border border-white/50 bg-white/70 backdrop-blur-md transition-all p-4 shadow-sm">
+    <div className="ml-auto w-full max-w-full lg:max-w-[600px] rounded-xl border border-white/50 bg-white/80 backdrop-blur-md transition-all p-4 shadow-[0_8px_30px_rgb(0,0,0,0.12)] hover:shadow-[0_8px_30px_rgb(0,0,0,0.16)]">
       <div className="flex items-center justify-between mb-2">
         <h2 className="text-lg font-semibold text-gray-800">Calendar</h2>
         <button
@@ -32,13 +32,26 @@ export default function CustomCalendar() {
             transition={{ duration: 0.3 }}
             className="overflow-hidden"
           >
-            <Calendar
-              onChange={(e) => setDate(e as Date)}
-              value={date}
-              locale="tr-TR"
-              calendarType="gregory"
-              className="modern-calendar w-full"
-            />
+            <div className="bg-white/80 rounded-xl p-4 shadow-inner">
+              <Calendar
+                onChange={(e) => setDate(e as Date)}
+                value={date}
+                locale="tr-TR"
+                calendarType="gregory"
+                className="modern-calendar w-full"
+                tileClassName={({ date: tileDate }) => 
+                  tileDate.getTime() === date?.getTime() 
+                    ? 'bg-indigo-500 text-white rounded-full' 
+                    : 'hover:bg-indigo-50 rounded-full'
+                }
+                next2Label={null}
+                prev2Label={null}
+                minDetail="month"
+                formatShortWeekday={(locale, date) => 
+                  ['P', 'P', 'S', 'Ç', 'P', 'C', 'C'][date.getDay()]
+                }
+              />
+            </div>
           </motion.div>
         )}
       </AnimatePresence>

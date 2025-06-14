@@ -1,23 +1,49 @@
 import { motion } from 'framer-motion';
-import { FiSettings } from 'react-icons/fi';
+import { FiSettings, FiBell } from 'react-icons/fi';
 
 export default function BoardHeader() {
   return (
     <motion.header 
       initial={{ y: -20, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
-      className="flex justify-between items-center mb-6 pb-4 border-b border-gray-200"
+      className="flex justify-between items-center mb-8 pb-6 border-b border-gray-100"
     >
-      <div>
-        <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
+      <div className="space-y-2">
+        <motion.h1 
+          initial={{ opacity: 0, x: -20 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ delay: 0.2 }}
+          className="text-3xl md:text-4xl lg:text-5xl font-extrabold text-indigo-500 font-sans tracking-tight"
+          style={{ fontFamily: "'Poppins', sans-serif" }}
+        >
           bahar's board
-        </h1>
-        <p className="text-gray-800 text-sm mt-1">Organize your thoughts and tasks</p>
+        </motion.h1>
+        <motion.p 
+          initial={{ opacity: 0, x: -20 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ delay: 0.3 }}
+          className="text-gray-600 text-sm font-medium"
+        >
+          Organize your thoughts and tasks
+        </motion.p>
       </div>
-      <button className="w-full sm:w-auto flex items-center gap-2 px-4 py-2 rounded-lg bg-white hover:bg-gray-400 border border-gray-200 text-gray-700 transition-colors">
-        <FiSettings className="text-indigo-500" />
-        <span className="hidden sm:inline">Settings</span>
-      </button>
+      <div className="flex items-center gap-3">
+        <motion.button 
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
+          className="w-10 h-10 flex items-center justify-center rounded-full bg-white hover:bg-gray-50 border border-gray-100 text-gray-600 transition-all shadow-sm hover:shadow-md"
+        >
+          <FiBell className="text-lg" />
+        </motion.button>
+        <motion.button 
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
+          className="w-full sm:w-auto flex items-center gap-2 px-4 py-2 rounded-lg bg-white hover:bg-gray-50 border border-gray-100 text-gray-600 transition-all shadow-sm hover:shadow-md"
+        >
+          <FiSettings className="text-indigo-500" />
+          <span className="hidden sm:inline font-medium">Settings</span>
+        </motion.button>
+      </div>
     </motion.header>
   );
 }

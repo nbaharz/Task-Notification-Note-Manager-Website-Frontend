@@ -82,7 +82,7 @@ export default function ToDoList() {
 
   return (
     <>
-      <div className="ml-auto w-full max-w-full lg:max-w-[600px] rounded-xl border border-white bg-white backdrop-blur-md transition-all shadow-sm overflow-hidden">
+      <div className="ml-auto w-full max-w-full lg:max-w-[400px] rounded-xl border border-white bg-white/80 backdrop-blur-md transition-all shadow-[0_8px_30px_rgb(0,0,0,0.12)] hover:shadow-[0_8px_30px_rgb(0,0,0,0.16)] overflow-hidden">
         <div className="flex items-center justify-between p-4 border-b border-white/40">
           <h2 className="text-lg font-semibold text-gray-800 flex items-center gap-2">
             <span className="bg-indigo-100 text-indigo-800 rounded-full w-6 h-6 flex items-center justify-center text-sm">
@@ -118,7 +118,7 @@ export default function ToDoList() {
                   onChange={(e) => setNewTask(e.target.value)}
                   onKeyDown={handleKeyDown}
                   placeholder="What needs to be done?"
-                  className="w-full p-3 pl-10 border-b border-gray-200 focus:outline-none focus:border-indigo-500 rounded-t-lg"
+                  className="w-full p-3 pl-10 border-b border-gray-200 focus:outline-none focus:border-indigo-500 rounded-t-lg bg-white/50"
                 />
                 <FiPlus className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
               </div>
@@ -160,41 +160,41 @@ export default function ToDoList() {
                             damping: 25, 
                             stiffness: 300 
                           }}
-                          className="relative bg-gray-300/10 rounded-lg shadow-sm border border-gray-100 overflow-hidden"
+                          className="relative bg-white rounded-lg shadow-[0_2px_8px_rgb(0,0,0,0.08)] hover:shadow-[0_4px_12px_rgb(0,0,0,0.12)] border border-gray-100 overflow-hidden transition-all"
                         >
                           <div className={`absolute top-0 left-0 w-full h-1 ${getPriorityColor(task.priority)}`} />
-                          <div className="flex items-start p-3">
+                          <div className="flex items-center p-2.5">
                             <button
                               onClick={() => toggleComplete(task.id)}
-                              className={`w-5 h-5 flex-shrink-0 flex items-center justify-center rounded-full border mr-3 mt-1 ${
-                                task.completed ? 'bg-indigo-500 border-indigo-500' : 'border-gray-300'
+                              className={`w-5 h-5 flex-shrink-0 flex items-center justify-center rounded-full border mr-3 transition-colors ${
+                                task.completed ? 'bg-indigo-500 border-indigo-500' : 'border-gray-300 hover:border-indigo-300'
                               }`}
                             >
                               {task.completed && <FiCheck className="text-white text-xs" />}
                             </button>
 
                             <div 
-                              className="flex-1 min-w-0 cursor-pointer py-1" 
+                              className="flex-1 min-w-0 cursor-pointer" 
                               onClick={() => openModal(task)}
                             >
-                              <span className={`block break-words whitespace-pre-wrap text-left w-full min-w-0 ${
+                              <span className={`block break-words whitespace-pre-wrap text-left w-full min-w-0 text-sm ${
                                 task.completed ? 'line-through text-gray-400' : 'text-gray-700'
                               }`}>
                                 {task.text}
                               </span>
                               {task.description && (
-                                <p className="text-sm text-gray-500 mt-1 line-clamp-2">
+                                <p className="text-xs text-gray-500 mt-0.5 line-clamp-1">
                                   {task.description}
                                 </p>
                               )}
                             </div>
 
-                            <div className="flex gap-1">
+                            <div className="flex gap-1 ml-2">
                               <button
                                 onClick={() => deleteTask(task.id)}
-                                className="text-gray-400 hover:text-red-500 flex-shrink-0 p-1"
+                                className="text-gray-400 hover:text-red-500 flex-shrink-0 p-1 transition-colors"
                               >
-                                <FiTrash2 size={16} />
+                                <FiTrash2 size={14} />
                               </button>
                             </div>
                           </div>
