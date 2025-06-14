@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import { FiSettings, FiBell } from 'react-icons/fi';
+import { FiSettings } from 'react-icons/fi';
 
 export default function BoardHeader() {
   return (
@@ -28,13 +28,6 @@ export default function BoardHeader() {
         </motion.p>
       </div>
       <div className="flex items-center gap-3">
-        <motion.button 
-          whileHover={{ scale: 1.05 }}
-          whileTap={{ scale: 0.95 }}
-          className="w-10 h-10 flex items-center justify-center rounded-full bg-white hover:bg-gray-50 border border-gray-100 text-gray-600 transition-all shadow-sm hover:shadow-md"
-        >
-          <FiBell className="text-lg" />
-        </motion.button>
         <motion.button 
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}

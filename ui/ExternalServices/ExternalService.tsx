@@ -48,7 +48,7 @@ export default function ExternalServices() {
       description: 'Amazon product tracking',
       icon: <SiAmazon className="text-[#FF9900]" size={32} />,
       subIcon: <FaChartLine className="text-green-500 absolute -bottom-2 -right-2" size={20} />,
-      color: 'bg-orange-50 border-orange-100 hover:bg-orange-100',
+      color: 'bg-white border-gray-200 border-b hover:bg-orange-100',
       textColor: 'text-orange-800',
       bgPattern: 'bg-[url("data:image/svg+xml,%3Csvg width=\'80\' height=\'80\' viewBox=\'0 0 80 80\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cpath d=\'M54 54L6 6M6 54L54 6\' stroke=\'%23FF9900\' stroke-width=\'0.5\' stroke-linecap=\'square\'/%3E%3C/svg%3E")]'
     },
@@ -56,7 +56,7 @@ export default function ExternalServices() {
       name: 'News API',
       description: 'Latest news updates',
       icon: <RiNewsLine className="text-blue-600" size={32} />,
-      color: 'bg-blue-50 border-blue-100 hover:bg-blue-100',
+      color: 'bg-white border-gray-200 border-b  hover:bg-blue-100',
       textColor: 'text-blue-800',
       bgPattern: 'bg-[url("data:image/svg+xml,%3Csvg width=\'80\' height=\'80\' viewBox=\'0 0 80 80\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cpath d=\'M30 6v6M30 48v6M6 30h6M48 30h6\' stroke=\'%232563EB\' stroke-width=\'1\' stroke-linecap=\'square\'/%3E%3C/svg%3E")]'
     },
@@ -78,8 +78,8 @@ export default function ExternalServices() {
   }
 
   return (
-      <div className="bg-white/80 backdrop-blur-md rounded-2xl p-6 shadow-sm w-full max-w-[400px] min-w-[350px] border border-gray-200/70">
-        <h2 className="text-2xl font-semibold mb-6 text-gray-800 flex items-center gap-3">
+      <div className="bg-white/80 backdrop-blur-md rounded-2xl p-6 shadow-[0_8px_30px_rgb(0,0,0,0.12)] hover:shadow-[0_8px_30px_rgb(0,0,0,0.16)] border border-white w-full max-w-full lg:max-w-[400px] ml-auto">
+        <h2 className="text-lg font-semibold mb-6 text-gray-800 flex items-center gap-3">
           <FiExternalLink className="text-gray-500" size={24} />
           <span>External Services</span>
         </h2>

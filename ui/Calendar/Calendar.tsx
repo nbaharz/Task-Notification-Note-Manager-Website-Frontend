@@ -11,7 +11,7 @@ export default function CustomCalendar() {
   const [showCalendar, setShowCalendar] = useState(false);
 
   return (
-    <div className="ml-auto w-full max-w-full lg:max-w-[600px] rounded-xl border border-white/50 bg-white/80 backdrop-blur-md transition-all p-4 shadow-[0_8px_30px_rgb(0,0,0,0.12)] hover:shadow-[0_8px_30px_rgb(0,0,0,0.16)]">
+    <div className="ml-auto w-full max-w-full lg:max-w-[400px] rounded-xl border border-white/50 bg-white/80 backdrop-blur-md transition-all p-4 shadow-[0_8px_30px_rgb(0,0,0,0.12)] hover:shadow-[0_8px_30px_rgb(0,0,0,0.16)]">
       <div className="flex items-center justify-between mb-2">
         <h2 className="text-lg font-semibold text-gray-800">Calendar</h2>
         <button

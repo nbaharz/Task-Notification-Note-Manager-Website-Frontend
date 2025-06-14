@@ -133,7 +133,7 @@ export default function ToDoList() {
                 <LayoutGroup>
                   <motion.ul 
                     layout 
-                    className="space-y-3 mt-4 pr-2 pb-2"
+                    className="space-y-3 mt-4 pr-2 pb-2 "
                     style={{
                       maxHeight: tasks.length > 5 ? '350px' : 'none',
                       overflowY: tasks.length > 5 ? 'auto' : 'hidden'

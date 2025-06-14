@@ -75,13 +75,13 @@ const NoteGrid = memo(({
 
   return (
     <div className="w-full lg:w-auto space-y-6">
-      {!isLoading && (
+      {/* {!isLoading && (
         <h2 className="text-lg sm:text-xl font-semibold text-gray-800">
           Quick Notes
         </h2>
-      )}
+      )} */}
 
-      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-2 xl:grid-cols-3 gap-3 sm:gap-4">
+      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-2 xl:grid-cols-3 gap-1 sm:gap-4">
         {displayNotes.map((note, index) =>
           note === null ? (
             <NoteCardSkeleton key={`skeleton-${index}`} />

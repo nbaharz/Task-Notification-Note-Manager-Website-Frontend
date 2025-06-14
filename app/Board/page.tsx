@@ -26,7 +26,6 @@ export default function NoteBoard() {
     togglePin,
     selectedNote,
     setSelectedNote,
-    isLoading,
   } = useNotes();
 
   const handleViewNote = (note: Note) => {
@@ -60,8 +59,8 @@ export default function NoteBoard() {
       {/* Grid Layout */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Left Column - Notes */}
-        <div className={`${activeTab === 'notes' ? 'block' : 'hidden'} md:block lg:col-span-1`}>
-          <NoteGrid
+        <div className={`${activeTab === 'notes' ? 'block' : 'hidden'} md:block lg:col-span-1 ml-4 sm:ml-6 lg:ml-5`}>
+        <NoteGrid
             notes={notes}
             onAddNote={(title) => addNote(title)}
             onViewNote={handleViewNote}
@@ -78,14 +77,15 @@ export default function NoteBoard() {
         </div>
 
         {/* Right Column - ToDo + Calendar */}
-        <div className={`${(activeTab === 'tasks' || activeTab === 'calendar') ? 'block' : 'hidden'} md:block lg:col-span-1 space-y-6`}>
-          <div className={`${activeTab === 'tasks' ? 'block' : 'hidden'} md:block`}>
-            <ToDoList />
-          </div>
-          <div className={`${activeTab === 'calendar' ? 'block' : 'hidden'} md:block`}>
-            <CustomCalendar />
-          </div>
+        <div className="lg:col-span-1 space-y-6 px-4 sm:px-6 lg:px-5">
+        <div className={`${activeTab === 'tasks' ? 'block' : 'hidden'} md:block`}>
+          <ToDoList />
         </div>
+        <div className={`${activeTab === 'calendar' ? 'block' : 'hidden'} md:block`}>
+          <CustomCalendar />
+        </div>
+      </div>
+
       </div>
 
       {/* Modals */}
