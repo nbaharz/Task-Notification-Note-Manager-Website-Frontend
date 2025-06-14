@@ -1,5 +1,5 @@
 'use client';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, memo, useCallback } from 'react';
 import { motion } from 'framer-motion';
 import { FiTrash2 } from 'react-icons/fi';
 
@@ -10,27 +10,34 @@ interface NoteCardProps {
   pinned?: boolean;
   isNew?: boolean;
   onTitleSubmit?: (title: string) => void;
+  color?: string;
 }
 
-export default function NoteCard({ 
+const NoteCard = memo(({ 
   title, 
   onClick, 
   onDelete, 
   pinned, 
   isNew = false, 
-  onTitleSubmit 
-}: NoteCardProps) {
+  onTitleSubmit,
+  color = 'bg-white/70'
+}: NoteCardProps) => {
   const [inputValue, setInputValue] = useState(title ?? '');
 
   useEffect(() => {
     setInputValue(title ?? '');
   }, [title]);
 
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+  const handleKeyDown = useCallback((e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter' && inputValue.trim() && onTitleSubmit) {
       onTitleSubmit(inputValue.trim());
     }
-  };
+  }, [inputValue, onTitleSubmit]);
+
+  const handleDelete = useCallback((e: React.MouseEvent) => {
+    e.stopPropagation();
+    onDelete?.();
+  }, [onDelete]);
 
   return (
     <motion.div
@@ -41,7 +48,7 @@ export default function NoteCard({
       className={`
         w-full aspect-square max-w-[200px] rounded-xl 
         border border-white/70
-        bg-white/70
+        ${color}
         backdrop-blur-md 
         flex flex-col items-center justify-center 
         cursor-pointer text-center 
@@ -58,10 +65,7 @@ export default function NoteCard({
       <div className="absolute top-2 left-2 right-2 flex justify-between items-start">
         {onDelete && (
           <button
-            onClick={(e) => {
-              e.stopPropagation();
-              onDelete();
-            }}
+            onClick={handleDelete}
             className="text-gray-400 hover:text-red-500 p-1 rounded-md transition-colors hover:bg-red-50/80"
           >
             <FiTrash2 size={16} />
@@ -94,4 +98,8 @@ export default function NoteCard({
       <div className="absolute bottom-0 w-full h-1.5 bg-gradient-to-r from-indigo-400/80 to-purple-400/80 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
     </motion.div>
   );
-}
+});
+
+NoteCard.displayName = 'NoteCard';
+
+export default NoteCard;

@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback, memo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { FiPlus } from 'react-icons/fi';
 import NoteCard from '@/ui/Note/NoteCard';
@@ -15,13 +15,13 @@ interface NoteGridProps {
   onShowAllNotes: () => void;
 }
 
-export default function NoteGrid({
+const NoteGrid = memo(({
   notes,
   onAddNote,
   onViewNote,
   onDeleteNote,
   onShowAllNotes,
-}: NoteGridProps) {
+}: NoteGridProps) => {
   const [isLoading, setIsLoading] = useState(true);
   const [isAddingNote, setIsAddingNote] = useState(false);
   const [showAllPinned, setShowAllPinned] = useState(false);
@@ -29,12 +29,11 @@ export default function NoteGrid({
   const addNoteRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const timeout = setTimeout(() => setIsLoading(false), 200); // 💡 yüklenme süresi
+    const timeout = setTimeout(() => setIsLoading(false), 200);
     return () => clearTimeout(timeout);
   }, []);
 
-  useEffect(() => {
-    const handleClickOutside = (e: MouseEvent) => {
+  const handleClickOutside = useCallback((e: MouseEvent) => {
       if (
         isAddingNote &&
         addNoteRef.current &&
@@ -42,10 +41,12 @@ export default function NoteGrid({
       ) {
         setIsAddingNote(false);
       }
-    };
+  }, [isAddingNote]);
+
+  useEffect(() => {
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, [isAddingNote]);
+  }, [handleClickOutside]);
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -53,6 +54,17 @@ export default function NoteGrid({
     }, 300);
     return () => clearTimeout(timer);
   }, [showAllPinned]);
+
+  const handleAddNote = useCallback((title: string) => {
+    onAddNote(title);
+    setIsAddingNote(false);
+  }, [onAddNote]);
+
+  const handleToggleShowAll = useCallback(() => {
+    setShowAllPinned((prev) => !prev);
+    setShowAddButton(false);
+    setTimeout(() => setShowAddButton(true), 500);
+  }, []);
 
   const pinnedNotes = notes.filter((n) => n.pinned);
   const displayNotes = isLoading
@@ -86,6 +98,7 @@ export default function NoteGrid({
                 pinned={note.pinned}
                 onClick={() => onViewNote(note)}
                 onDelete={() => onDeleteNote(note.title)}
+                color={note.color}
               />
             </motion.div>
           )
@@ -102,10 +115,7 @@ export default function NoteGrid({
             >
               <NoteCard
                 isNew
-                onTitleSubmit={(title) => {
-                  onAddNote(title);
-                  setIsAddingNote(false);
-                }}
+                onTitleSubmit={handleAddNote}
               />
             </motion.div>
           )}
@@ -142,11 +152,7 @@ export default function NoteGrid({
       {!isLoading && pinnedNotes.length > 5 && (
         <div className="text-center">
           <button
-            onClick={() => {
-              setShowAllPinned((prev) => !prev);
-              setShowAddButton(false);
-              setTimeout(() => setShowAddButton(true), 500);
-            }}
+            onClick={handleToggleShowAll}
             className="text-indigo-600 text-sm hover:text-indigo-800 mt-2"
           >
             {showAllPinned ? 'Show Less' : 'See All'}
@@ -155,4 +161,8 @@ export default function NoteGrid({
       )}
     </div>
   );
-}
+});
+
+NoteGrid.displayName = 'NoteGrid';
+
+export default NoteGrid;
