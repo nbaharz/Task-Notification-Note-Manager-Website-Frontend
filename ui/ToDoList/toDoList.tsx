@@ -73,9 +73,9 @@ export default function ToDoList() {
 
   const getPriorityColor = (priority?: string) => {
     switch (priority) {
-      case 'high': return 'bg-red-400/80';
-      case 'medium': return 'bg-blue-500/80';
-      case 'low': return 'bg-green-500/80';
+      case 'high': return 'bg-rose-600/80';
+      case 'medium': return 'bg-cyan-500';
+      case 'low': return 'bg-emerald-600';
       default: return 'bg-gray-400/80';
     }
   };
