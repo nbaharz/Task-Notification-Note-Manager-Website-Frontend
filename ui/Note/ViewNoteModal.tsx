@@ -11,7 +11,7 @@ interface ViewNoteModalProps {
   note: Note;
   onClose: () => void;
   onSave: (updatedNote: Note) => void;
-  setNote: (note: Note) => void;
+  setNote?: (note: Note) => void;
 }
 
 function ViewNoteModal({ note, onClose, onSave, setNote }: ViewNoteModalProps) {
@@ -21,36 +21,39 @@ function ViewNoteModal({ note, onClose, onSave, setNote }: ViewNoteModalProps) {
   const [showColorPicker, setShowColorPicker] = useState(false);
   const colorButtonRef = useRef<HTMLButtonElement>(null);
 
-
-  const handleSaveAndClose = useCallback(() => {
-    const updatedNote: Note = {
-      ...note,
-      title: currentTitle.trim(),
-      content: currentContent.trim(),
-      color: currentColor,
-    };
-    onSave(updatedNote);
-    onClose();
-  }, [note, currentTitle, currentContent, currentColor, onSave, onClose]);
-
-  const handleColorSelect = useCallback((colorValue: string) => {
-    setCurrentColor(colorValue);
-    setShowColorPicker(false);
-    const updatedNote: Note = {
-      ...note,
-      color: colorValue,
-    };
-    setNote(updatedNote);
-  }, [note, setNote]);
-
-  // useEffect ile state güncellemelerini optimize edelim
+  // Update internal states when note prop changes
   useEffect(() => {
     setCurrentTitle(note.title);
     setCurrentContent(note.content);
     setCurrentColor(note.color || 'bg-white/70');
   }, [note]);
 
-  // Click outside handler'ı useCallback ile optimize edelim
+  const handleTitleChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    setCurrentTitle(e.target.value);
+  }, []);
+
+  const handleContentChange = useCallback((e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    setCurrentContent(e.target.value);
+  }, []);
+
+  const handleColorSelect = useCallback((colorValue: string) => {
+    setCurrentColor(colorValue);
+    setShowColorPicker(false);
+  }, []);
+
+  const handleSaveAndClose = useCallback(() => {
+    const updatedNote = {
+      ...note,
+      title: currentTitle.trim(),
+      content: currentContent.trim(),
+      color: currentColor,
+    };
+
+    onSave(updatedNote);
+    setNote?.(updatedNote);
+    onClose();
+  }, [note, currentTitle, currentContent, currentColor, onSave, setNote, onClose]);
+
   const handleClickOutside = useCallback((event: MouseEvent) => {
     if (colorButtonRef.current && !colorButtonRef.current.contains(event.target as Node)) {
       setShowColorPicker(false);
@@ -67,11 +70,11 @@ function ViewNoteModal({ note, onClose, onSave, setNote }: ViewNoteModalProps) {
   }, [showColorPicker, handleClickOutside]);
 
   return (
-    <ModalWrapper 
-      onClose={handleSaveAndClose} 
-      position="center" 
-      maxWidth="max-w-[700px]" 
-      maxHeight='max-h-[500px]'
+    <ModalWrapper
+      onClose={handleSaveAndClose}
+      position="center"
+      maxWidth="max-w-[700px]"
+      maxHeight="max-h-[500px]"
     >
       <div className="p-4 flex justify-between items-center border-b border-gray-100">
         <div className="flex items-center gap-2 relative">
@@ -83,7 +86,7 @@ function ViewNoteModal({ note, onClose, onSave, setNote }: ViewNoteModalProps) {
           >
             <FiDroplet className="text-gray-600 text-sm" />
           </button>
-          
+
           <AnimatePresence>
             {showColorPicker && (
               <motion.div
@@ -94,7 +97,7 @@ function ViewNoteModal({ note, onClose, onSave, setNote }: ViewNoteModalProps) {
                 className="absolute left-0 top-full mt-2 z-20 bg-white rounded-xl shadow-lg p-2"
                 style={{
                   transform: 'translateX(-25%)',
-                  minWidth: '200px'
+                  minWidth: '200px',
                 }}
               >
                 <div className="grid grid-cols-3 gap-2">
@@ -111,7 +114,7 @@ function ViewNoteModal({ note, onClose, onSave, setNote }: ViewNoteModalProps) {
             )}
           </AnimatePresence>
         </div>
-        
+
         <button
           onClick={handleSaveAndClose}
           className="text-gray-400 hover:text-gray-600 transition-colors"
@@ -120,18 +123,18 @@ function ViewNoteModal({ note, onClose, onSave, setNote }: ViewNoteModalProps) {
           <FiX size={20} />
         </button>
       </div>
-      
+
       <div className="px-6 pb-6 flex flex-col gap-4 flex-grow">
         <input
           type="text"
           value={currentTitle}
-          onChange={(e) => setCurrentTitle(e.target.value)}
+          onChange={handleTitleChange}
           className="flex-1 text-xl font-medium text-gray-800 outline-none border-b border-gray-200 focus:border-blue-500 bg-transparent py-2"
           placeholder="Title"
         />
         <textarea
           value={currentContent}
-          onChange={(e) => setCurrentContent(e.target.value)}
+          onChange={handleContentChange}
           className="flex-1 min-h-[300px] text-gray-700 placeholder:text-gray-400 text-base outline-none resize-none bg-transparent"
           placeholder="Add your note content here..."
         />
