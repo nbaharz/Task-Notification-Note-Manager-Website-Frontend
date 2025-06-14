@@ -3,9 +3,10 @@
 import { useState, useEffect } from 'react';
 import TrackedProductsModal from './TrackedProducts/TrackedProductsModal';
 import { FiExternalLink } from 'react-icons/fi';
-import { SiAmazon} from 'react-icons/si';
+import { SiAmazon } from 'react-icons/si';
 import { RiNewsLine } from 'react-icons/ri';
 import { FaChartLine } from 'react-icons/fa';
+import ExternalServicesSkeleton from './ExternalServicesSkeleton'; // Skeleton bileşenini import ediyoruz
 
 interface TrackedProduct {
   id: string;
@@ -20,21 +21,32 @@ interface TrackedProduct {
 export default function ExternalServices() {
   const [showModal, setShowModal] = useState(false);
   const [savedProducts, setSavedProducts] = useState<TrackedProduct[]>([]);
+  const [isLoading, setIsLoading] = useState(true); // Yükleme durumu ekliyoruz
 
   useEffect(() => {
-    const stored = localStorage.getItem('trackedProducts');
-    if (stored) {
-      setSavedProducts(JSON.parse(stored));
-    }
+    // Veri yükleme simülasyonu
+    const timer = setTimeout(() => {
+      const stored = localStorage.getItem('trackedProducts');
+      if (stored) {
+        setSavedProducts(JSON.parse(stored));
+      }
+      setIsLoading(false); // Veri yüklendikten sonra yüklemeyi bitir
+    }, 200); // 1 saniye gecikme ile yükleme simülasyonu
+
+    return () => clearTimeout(timer); // Cleanup
   }, []);
 
   useEffect(() => {
-    localStorage.setItem('trackedProducts', JSON.stringify(savedProducts));
-  }, [savedProducts]);
+    // isLoading true ise localStorage'a yazma işlemini yapmayız.
+    // Bu, iskelet gösterilirken boş bir array'in yazılmasını engeller.
+    if (!isLoading) { 
+      localStorage.setItem('trackedProducts', JSON.stringify(savedProducts));
+    }
+  }, [savedProducts, isLoading]);
 
   const services = [
-    { 
-      name: 'Tracked Products', 
+    {
+      name: 'Tracked Products',
       description: 'Amazon product tracking',
       icon: <SiAmazon className="text-[#FF9900]" size={32} />,
       subIcon: <FaChartLine className="text-green-500 absolute -bottom-2 -right-2" size={20} />,
@@ -42,8 +54,8 @@ export default function ExternalServices() {
       textColor: 'text-orange-800',
       bgPattern: 'bg-[url("data:image/svg+xml,%3Csvg width=\'80\' height=\'80\' viewBox=\'0 0 80 80\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cpath d=\'M54 54L6 6M6 54L54 6\' stroke=\'%23FF9900\' stroke-width=\'0.5\' stroke-linecap=\'square\'/%3E%3C/svg%3E")]'
     },
-    { 
-      name: 'News API', 
+    {
+      name: 'News API',
       description: 'Latest news updates',
       icon: <RiNewsLine className="text-blue-600" size={32} />,
       color: 'bg-blue-50 border-blue-100 hover:bg-blue-100',
@@ -57,6 +69,10 @@ export default function ExternalServices() {
       setShowModal(true);
     }
   };
+
+  if (isLoading) {
+    return <ExternalServicesSkeleton />; // Yükleniyorsa iskeleti göster
+  }
 
   return (
     <>

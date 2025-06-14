@@ -1,9 +1,9 @@
-'use client';
-import { motion } from 'framer-motion';
+// components/ui/Note/NoteCardSkeleton.tsx
+import React from 'react'; // motion import'unu kaldırdık
 
 export default function NoteCardSkeleton() {
   return (
-    <motion.div
+    <div // <motion.div> yerine <div> kullanıldı
       className="
         w-full aspect-square max-w-[200px] rounded-xl 
         border border-gray-200
@@ -12,8 +12,7 @@ export default function NoteCardSkeleton() {
         overflow-hidden
         relative
       " 
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
+      // initial ve animate prop'ları kaldırıldı
     >
       {/* Top bar with placeholder icons */}
       <div className="absolute top-3 left-3 right-3 flex justify-between">
@@ -29,6 +28,6 @@ export default function NoteCardSkeleton() {
 
       {/* Bottom accent bar placeholder */}
       <div className="absolute bottom-0 w-full h-1.5 bg-gray-300" />
-    </motion.div>
+    </div>
   );
 }

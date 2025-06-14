@@ -1,6 +1,7 @@
+// app/Board/page.tsx
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import BoardHeader from './BoardHeader';
 import NoteGrid from '@/ui/Note/NoteGrid';
 import ViewNoteModal from '@/ui/Note/ViewNoteModal';
@@ -16,22 +17,17 @@ export default function NoteBoard() {
   const [activeTab, setActiveTab] = useState('notes');
   const [showViewModal, setShowViewModal] = useState(false);
   const [showAllNotesModal, setShowAllNotesModal] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
 
   const {
     notes,
     addNote,
     deleteNote,
-    updateNote,
+    updateNote, // This now expects an argument!
     togglePin,
     selectedNote,
-    setSelectedNote
+    setSelectedNote,
+    isLoading,
   } = useNotes();
-
-  useEffect(() => {
-    const timer = setTimeout(() => setIsLoading(false), 1000);
-    return () => clearTimeout(timer);
-  }, []);
 
   const handleViewNote = (note: Note) => {
     setSelectedNote(note);
@@ -39,7 +35,7 @@ export default function NoteBoard() {
   };
 
   return (
-  <div className="min-h-screen p-4 md:p-6 bg-gradient-to-r from-purple-200 to-yellow-100 text-gray-900 font-sans">
+    <div className="min-h-screen p-4 md:p-6 bg-gradient-to-r from-purple-200 to-yellow-100 text-gray-900 font-sans">
       <BoardHeader />
 
       {/* Mobile Tabs */}
@@ -67,19 +63,18 @@ export default function NoteBoard() {
         <div className={`${activeTab === 'notes' ? 'block' : 'hidden'} md:block lg:col-span-1`}>
           <NoteGrid
             notes={notes}
-            onAddNote={(title) => addNote({ title, content: '', pinned: true })}
+            onAddNote={(title) => addNote(title)}
             onViewNote={handleViewNote}
             onDeleteNote={deleteNote}
             onShowAllNotes={() => setShowAllNotesModal(true)}
-            isLoading={isLoading}
           />
         </div>
 
         {/* Middle Column - External Services */}
         <div className={`${activeTab === 'external' ? 'block' : 'hidden'} md:block lg:col-span-1`}>
           <div className="w-full flex justify-center">
-              <ExternalServices />
-         </div>
+            <ExternalServices />
+          </div>
         </div>
 
         {/* Right Column - ToDo + Calendar */}
@@ -99,7 +94,8 @@ export default function NoteBoard() {
           <ViewNoteModal
             note={selectedNote}
             onClose={() => setShowViewModal(false)}
-            onSave={updateNote}
+            // CHANGE THIS LINE: Now onSave receives the updated note from the modal
+            onSave={updateNote} // <-- This is now correct, as updateNote expects the Note object
             setNote={setSelectedNote}
           />
         )}

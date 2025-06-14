@@ -13,7 +13,6 @@ interface NoteGridProps {
   onViewNote: (note: Note) => void;
   onDeleteNote: (title: string) => void;
   onShowAllNotes: () => void;
-  isLoading?: boolean;
 }
 
 export default function NoteGrid({
@@ -21,25 +20,18 @@ export default function NoteGrid({
   onAddNote,
   onViewNote,
   onDeleteNote,
-  isLoading = false
+  onShowAllNotes,
 }: NoteGridProps) {
+  const [isLoading, setIsLoading] = useState(true);
   const [isAddingNote, setIsAddingNote] = useState(false);
   const [showAllPinned, setShowAllPinned] = useState(false);
   const [showAddButton, setShowAddButton] = useState(false);
   const addNoteRef = useRef<HTMLDivElement>(null);
 
-  const pinnedNoteCount = notes.filter(n => n.pinned).length;
-
-  const getDisplayNotes = (): (Note | null)[] => {
-    if (isLoading) {
-      return Array(6).fill(null); // 👈 Hızlı ve sabit 6 skeleton
-    }
-
-    const pinnedNotes = notes.filter(note => note.pinned);
-    return showAllPinned ? pinnedNotes : pinnedNotes.slice(0, 5);
-  };
-
-  const displayNotes = getDisplayNotes();
+  useEffect(() => {
+    const timeout = setTimeout(() => setIsLoading(false), 200); // 💡 yüklenme süresi
+    return () => clearTimeout(timeout);
+  }, []);
 
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
@@ -58,9 +50,16 @@ export default function NoteGrid({
   useEffect(() => {
     const timer = setTimeout(() => {
       setShowAddButton(true);
-    }, 300); // Daha kısa gecikme
+    }, 300);
     return () => clearTimeout(timer);
-  }, [displayNotes, showAllPinned]);
+  }, [showAllPinned]);
+
+  const pinnedNotes = notes.filter((n) => n.pinned);
+  const displayNotes = isLoading
+    ? Array(6).fill(null)
+    : showAllPinned
+    ? pinnedNotes
+    : pinnedNotes.slice(0, 5);
 
   return (
     <div className="w-full lg:w-auto space-y-6">
@@ -79,7 +78,7 @@ export default function NoteGrid({
               key={`note-${note.title}-${index}`}
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: index * 0.1 }}
+              transition={{ delay: index * 0.05 }}
               className="col-span-1 h-full"
             >
               <NoteCard
@@ -120,33 +119,16 @@ export default function NoteGrid({
             whileHover={{
               y: -5,
               boxShadow:
-                '0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 5px 10px -5px rgba(0, 0, 0, 0.04)'
+                '0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 5px 10px -5px rgba(0, 0, 0, 0.04)',
             }}
-            className="
-              w-full aspect-square max-w-[200px] rounded-xl 
-              border border-white/70
-              bg-white/40
-              backdrop-blur-md 
-              flex flex-col items-center justify-center 
-              cursor-pointer text-center 
-              overflow-hidden
-              group
-            "
+            className="w-full aspect-square max-w-[200px] rounded-xl border border-white/70 bg-white/40 backdrop-blur-md flex flex-col items-center justify-center cursor-pointer text-center overflow-hidden group"
             onClick={() => setIsAddingNote(true)}
             role="button"
             aria-label="Add new note"
           >
             <div className="flex flex-col items-center justify-center flex-1 w-full px-4 py-6">
-              <div className="
-                bg-indigo-100 w-10 h-10 rounded-full
-                flex items-center justify-center
-                mb-3 group-hover:bg-indigo-200 transition-colors
-              ">
-                <FiPlus className="
-                  text-indigo-600
-                  text-xl
-                  transition-transform group-hover:rotate-90
-                " />
+              <div className="bg-indigo-100 w-10 h-10 rounded-full flex items-center justify-center mb-3 group-hover:bg-indigo-200 transition-colors">
+                <FiPlus className="text-indigo-600 text-xl transition-transform group-hover:rotate-90" />
               </div>
               <p className="text-gray-800 font-medium group-hover:text-indigo-600 transition-colors">
                 Add Note
@@ -157,11 +139,11 @@ export default function NoteGrid({
         )}
       </div>
 
-      {!isLoading && pinnedNoteCount > 5 && (
+      {!isLoading && pinnedNotes.length > 5 && (
         <div className="text-center">
           <button
             onClick={() => {
-              setShowAllPinned(prev => !prev);
+              setShowAllPinned((prev) => !prev);
               setShowAddButton(false);
               setTimeout(() => setShowAddButton(true), 500);
             }}
