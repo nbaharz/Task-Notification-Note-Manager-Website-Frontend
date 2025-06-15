@@ -82,8 +82,7 @@ export default function ToDoList() {
 
   return (
     <>
-      <div className="ml-auto w-full max-w-full lg:max-w-[400px] rounded-xl border border-white bg-white/80 backdrop-blur-md transition-all shadow-[0_8px_30px_rgb(0,0,0,0.12)] hover:shadow-[0_8px_30px_rgb(0,0,0,0.16)] overflow-hidden">
-        <div className="flex items-center justify-between p-4 border-b border-white/40">
+<div className="w-full  rounded-xl border border-white bg-white/80 backdrop-blur-md transition-all shadow-[0_8px_30px_rgb(0,0,0,0.12)] hover:shadow-[0_8px_30px_rgb(0,0,0,0.16)] overflow-hidden">        <div className="flex items-center justify-between p-4 border-b border-white/40">
           <h2 className="text-lg font-semibold text-gray-800 flex items-center gap-2">
             <span className="bg-indigo-100 text-indigo-800 rounded-full w-6 h-6 flex items-center justify-center text-sm">
               {tasks.length}

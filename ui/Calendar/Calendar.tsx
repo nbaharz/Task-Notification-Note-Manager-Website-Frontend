@@ -8,10 +8,10 @@ import './Calendar.css';
 
 export default function CustomCalendar() {
   const [date, setDate] = useState<Date | null>(new Date());
-  const [showCalendar, setShowCalendar] = useState(false);
+  const [showCalendar, setShowCalendar] = useState(true); // Varsayılan olarak açık
 
   return (
-    <div className="ml-auto w-full max-w-full lg:max-w-[400px] rounded-xl border border-white/50 bg-white/80 backdrop-blur-md transition-all p-4 shadow-[0_8px_30px_rgb(0,0,0,0.12)] hover:shadow-[0_8px_30px_rgb(0,0,0,0.16)]">
+    <div className="w-full  rounded-xl border border-white/50 bg-white/80 backdrop-blur-md transition-all p-4 shadow-[0_8px_30px_rgb(0,0,0,0.12)] hover:shadow-[0_8px_30px_rgb(0,0,0,0.16)]">
       <div className="flex items-center justify-between mb-2">
         <h2 className="text-lg font-semibold text-gray-800">Calendar</h2>
         <button
@@ -32,7 +32,7 @@ export default function CustomCalendar() {
             transition={{ duration: 0.3 }}
             className="overflow-hidden"
           >
-            <div className="bg-white/80 rounded-xl p-4 shadow-inner">
+            <div className="bg-white/80 rounded-xl p-0 sm:p-2 shadow-inner">
               <Calendar
                 onChange={(e) => setDate(e as Date)}
                 value={date}

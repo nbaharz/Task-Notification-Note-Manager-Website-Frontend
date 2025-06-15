@@ -81,7 +81,7 @@ const NoteGrid = memo(({
         </h2>
       )} */}
 
-      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-2 xl:grid-cols-3 gap-1 sm:gap-4">
+      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-2 xl:grid-cols-2 gap-6 sm:gap-4 xl:gap-6">
         {displayNotes.map((note, index) =>
           note === null ? (
             <NoteCardSkeleton key={`skeleton-${index}`} />

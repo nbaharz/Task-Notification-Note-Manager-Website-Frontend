@@ -22,7 +22,7 @@ export default function NoteBoard() {
     notes,
     addNote,
     deleteNote,
-    updateNote, // This now expects an argument!
+    updateNote,
     togglePin,
     selectedNote,
     setSelectedNote,
@@ -55,38 +55,38 @@ export default function NoteBoard() {
           ))}
         </div>
       </div>
+{/* Desktop Grid Layout */}
+<div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-4 gap-6 ">
+  {/* NoteGrid */}
+  <div className={`${activeTab === 'notes' ? 'block' : 'hidden'} md:block lg:col-span-1 xl:col-span-1`}>
+    <NoteGrid
+      notes={notes}
+      onAddNote={(title) => addNote(title)}
+      onViewNote={handleViewNote}
+      onDeleteNote={deleteNote}
+      onShowAllNotes={() => setShowAllNotesModal(true)}
+    />
+  </div>
 
-      {/* Grid Layout */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Left Column - Notes */}
-        <div className={`${activeTab === 'notes' ? 'block' : 'hidden'} md:block lg:col-span-1 ml-4 sm:ml-6 lg:ml-5`}>
-        <NoteGrid
-            notes={notes}
-            onAddNote={(title) => addNote(title)}
-            onViewNote={handleViewNote}
-            onDeleteNote={deleteNote}
-            onShowAllNotes={() => setShowAllNotesModal(true)}
-          />
-        </div>
+  {/* ExternalServices */}
+  <div className={`${activeTab === 'external' ? 'block' : 'hidden'} md:block`}>
+    <div className="w-full flex justify-center">
+      <ExternalServices />
+    </div>
+  </div>
 
-        {/* Middle Column - External Services */}
-        <div className={`${activeTab === 'external' ? 'block' : 'hidden'} md:block lg:col-span-1`}>
-          <div className="w-full flex justify-center">
-            <ExternalServices />
-          </div>
-        </div>
+  {/* ToDoList */}
+  <div className={`${activeTab === 'tasks' ? 'block' : 'hidden'} md:block`}>
+    <ToDoList />
+  </div>
 
-        {/* Right Column - ToDo + Calendar */}
-        <div className="lg:col-span-1 space-y-6 px-4 sm:px-6 lg:px-5">
-        <div className={`${activeTab === 'tasks' ? 'block' : 'hidden'} md:block`}>
-          <ToDoList />
-        </div>
-        <div className={`${activeTab === 'calendar' ? 'block' : 'hidden'} md:block`}>
-          <CustomCalendar />
-        </div>
-      </div>
+  {/* CustomCalendar */}
+  <div className={`${activeTab === 'calendar' ? 'block' : 'hidden'} md:block`}>
+    <CustomCalendar />
+  </div>
+</div>
 
-      </div>
+
 
       {/* Modals */}
       <AnimatePresence>

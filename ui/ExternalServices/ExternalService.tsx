@@ -78,8 +78,7 @@ export default function ExternalServices() {
   }
 
   return (
-      <div className="bg-white/80 backdrop-blur-md rounded-2xl p-6 shadow-[0_8px_30px_rgb(0,0,0,0.12)] hover:shadow-[0_8px_30px_rgb(0,0,0,0.16)] border border-white w-full max-w-full lg:max-w-[400px] ml-auto">
-        <h2 className="text-lg font-semibold mb-6 text-gray-800 flex items-center gap-3">
+    <div className="bg-white/80 backdrop-blur-md rounded-2xl p-6 shadow-[0_8px_30px_rgb(0,0,0,0.12)] hover:shadow-[0_8px_30px_rgb(0,0,0,0.16)] border border-white w-full">        <h2 className="text-lg font-semibold mb-6 text-gray-800 flex items-center gap-3">
           <FiExternalLink className="text-gray-500" size={24} />
           <span>External Services</span>
         </h2>
