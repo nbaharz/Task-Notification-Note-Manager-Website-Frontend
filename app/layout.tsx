@@ -1,7 +1,7 @@
 import './globals.css'
 import { Inter } from 'next/font/google'
 import { ThemeProvider } from './context/ThemeContext'
-import { useEffect } from 'react'
+
 
 const inter = Inter({ subsets: ['latin'] })
 

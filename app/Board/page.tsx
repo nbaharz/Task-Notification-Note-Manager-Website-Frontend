@@ -1,13 +1,13 @@
 'use client';
 
 import { useState } from 'react';
-import BoardHeader from './BoardHeader';
 import BoardTabs from './BoardTabs';
 import BoardContent from './BoardContext';
 import Modals from './Modals';
 import { useNotes } from '@/hooks/useNotes';
 import { Note } from '@/types/types';
-
+import Navbar from '../../ui/Navbar';
+import Footer from '../../ui/Footer';
 export default function NoteBoard() {
   const [activeTab, setActiveTab] = useState('notes');
   const [showViewModal, setShowViewModal] = useState(false);
@@ -29,29 +29,32 @@ export default function NoteBoard() {
   };
 
   return (
-    <div className="min-h-screen p-4 md:p-6 bg-[#FDF6E3] text-gray-800 font-sans">
-      <BoardHeader />
-      <BoardTabs activeTab={activeTab} setActiveTab={setActiveTab} />
-      <BoardContent
-        activeTab={activeTab}
-        notes={notes}
-        onAddNote={addNote}
-        onViewNote={handleViewNote}
-        onDeleteNote={deleteNote}
-        onShowAllNotes={() => setShowAllNotesModal(true)}
-      />
-      <Modals
-        showViewModal={showViewModal}
-        setShowViewModal={setShowViewModal}
-        showAllNotesModal={showAllNotesModal}
-        setShowAllNotesModal={setShowAllNotesModal}
-        selectedNote={selectedNote}
-        setSelectedNote={setSelectedNote}
-        notes={notes}
-        updateNote={updateNote}
-        togglePin={togglePin}
-        deleteNote={deleteNote}
-      />
+    <div className="min-h-screen flex flex-col bg-[#FDF6E3] text-gray-800 font-sans">
+      <Navbar />
+      <main className="flex-1">
+        <BoardTabs activeTab={activeTab} setActiveTab={setActiveTab} />
+        <BoardContent
+          activeTab={activeTab}
+          notes={notes}
+          onAddNote={addNote}
+          onViewNote={handleViewNote}
+          onDeleteNote={deleteNote}
+          onShowAllNotes={() => setShowAllNotesModal(true)}
+        />
+        <Modals
+          showViewModal={showViewModal}
+          setShowViewModal={setShowViewModal}
+          showAllNotesModal={showAllNotesModal}
+          setShowAllNotesModal={setShowAllNotesModal}
+          selectedNote={selectedNote}
+          setSelectedNote={setSelectedNote}
+          notes={notes}
+          updateNote={updateNote}
+          togglePin={togglePin}
+          deleteNote={deleteNote}
+        />
+      </main>
+      <Footer/>
     </div>
   );
 }
