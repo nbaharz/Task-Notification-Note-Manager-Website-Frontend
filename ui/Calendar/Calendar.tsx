@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import Calendar from 'react-calendar';
 import { motion, AnimatePresence } from 'framer-motion';
-import { FiChevronUp, FiChevronDown } from 'react-icons/fi';
+import { FiChevronUp, FiChevronDown, FiCalendar} from 'react-icons/fi';
 import './Calendar.css';
 
 export default function CustomCalendar() {
@@ -11,13 +11,18 @@ export default function CustomCalendar() {
   const [showCalendar, setShowCalendar] = useState(true);
 
   return (
-    <div className="pr-4"> {/* Sağdan boşluk eklemek için bu div'i ekledik */}
+    <div className="pr-4">
       <div className="w-full rounded-xl border border-white/50 bg-white/80 backdrop-blur-md transition-all p-4 shadow-[0_8px_30px_rgb(0,0,0,0.12)] hover:shadow-[0_8px_30px_rgb(0,0,0,0.16)]">
         <div className="flex items-center justify-between mb-2">
-          <h2 className="text-lg font-semibold text-gray-800">Calendar / Reminders</h2>
+          <div className="flex items-center gap-2">
+            <FiCalendar className="text-indigo-500 w-6 h-6" />
+            <h2 className="text-lg font-semibold text-gray-800">Calendar </h2>
+        
+          </div>
           <button
             onClick={() => setShowCalendar(!showCalendar)}
             className="text-gray-600 hover:text-indigo-600 transition cursor-pointer"
+            aria-label={showCalendar ? 'Hide' : 'Show'}
           >
             {showCalendar ? <FiChevronUp size={20} /> : <FiChevronDown size={20} />}
           </button>

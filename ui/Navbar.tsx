@@ -1,5 +1,6 @@
 'use client';
 import { useState, useEffect } from 'react';
+import { FiPlus, FiSettings, FiClipboard } from 'react-icons/fi';
 
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
@@ -24,6 +25,7 @@ export default function Navbar() {
       }}
     >
       <div className="flex items-center gap-3">
+        <FiClipboard className="text-indigo-500 w-8 h-8" />
         <span className="text-2xl md:text-3xl font-extrabold text-indigo-500 font-sans tracking-tight" style={{ fontFamily: "'Poppins', sans-serif" }}>
           bahar's board
         </span>
@@ -35,17 +37,13 @@ export default function Navbar() {
         <button
           className="flex items-center gap-2 px-4 py-2 rounded-lg bg-indigo-50 hover:bg-indigo-100 border border-indigo-100 text-indigo-600 transition-all shadow-sm hover:shadow-md font-medium"
         >
-          <svg className="w-5 h-5 text-indigo-500" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
-          </svg>
+          <FiPlus className="w-5 h-5 text-indigo-500" />
           <span className="hidden sm:inline">New</span>
         </button>
         <button
           className="flex items-center gap-2 px-4 py-2 rounded-lg bg-white hover:bg-gray-50 border border-gray-100 text-gray-600 transition-all shadow-sm hover:shadow-md"
         >
-          <svg className="w-5 h-5 text-indigo-500" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
-          </svg>
+          <FiSettings className="w-5 h-5 text-indigo-500" />
           <span className="hidden sm:inline">Settings</span>
         </button>
       </div>

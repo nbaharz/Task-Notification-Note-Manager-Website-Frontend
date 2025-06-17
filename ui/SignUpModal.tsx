@@ -1,7 +1,8 @@
 'use client';
 
 import { useEffect } from "react";
-import { useSignUp } from "@/hooks/useSignUp"; // dosyanın yolunu uygun şekilde ayarla
+import { useSignUp } from "@/hooks/useSignUp";
+import { FiUserPlus, FiMail, FiLock, FiUser, FiX } from "react-icons/fi";
 
 interface SignUpModalProps {
   isOpen: boolean;
@@ -23,60 +24,73 @@ export default function SignUpModal({ isOpen, onClose }: SignUpModalProps) {
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center">
-      <div className="absolute inset-0 bg-black/50 backdrop-blur-sm fade-in" onClick={onClose}></div>
-
-      <div className="relative z-10 w-[90%] max-w-md rounded-xl bg-white p-6 shadow-2xl scale-in">
-        <h2 className="text-2xl font-bold mb-4 text-center">Sign Up</h2>
-
-        <form className="flex flex-col gap-3" onSubmit={handleSubmit}>
-          <input
-            type="text"
-            placeholder="Name"
-            className="border p-2 rounded"
-            value={form.name}
-            onChange={(e) => handleChange('name', e.target.value)}
-            required
-          />
-          <input
-            type="text"
-            placeholder="Surname"
-            className="border p-2 rounded"
-            value={form.surname}
-            onChange={(e) => handleChange('surname', e.target.value)}
-            required
-          />
-          <input
-            type="email"
-            placeholder="Email"
-            className="border p-2 rounded"
-            value={form.email}
-            onChange={(e) => handleChange('email', e.target.value)}
-            required
-          />
-          <input
-            type="password"
-            placeholder="Password"
-            className="border p-2 rounded"
-            value={form.password}
-            onChange={(e) => handleChange('password', e.target.value)}
-            required
-          />
-          {error && <p className="text-red-500 text-sm">{error}</p>}
-          <button
-            type="submit"
-            className="bg-blue-600 text-white py-2 rounded hover:bg-blue-700 transition disabled:opacity-50"
-            disabled={loading}
-          >
-            {loading ? 'Signing up...' : 'Submit'}
-          </button>
-        </form>
-
+      <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" onClick={onClose}></div>
+      <div className="relative z-10 w-[90%] max-w-md rounded-2xl bg-white p-8 shadow-2xl">
         <button
           onClick={onClose}
-          className="mt-4 block mx-auto text-sm text-gray-600 hover:underline"
+          className="absolute top-3 right-3 text-gray-400 hover:text-red-500 transition"
+          aria-label="Kapat"
         >
-          Close
+          <FiX size={22} />
         </button>
+        <div className="flex flex-col items-center mb-6">
+          <FiUserPlus className="text-indigo-500 w-10 h-10 mb-2" />
+          <h2 className="text-2xl font-bold text-center text-gray-800">Create Your Account</h2>
+        </div>
+        <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
+          <div className="relative">
+            <FiUser className="absolute left-3 top-3 text-gray-400" />
+            <input
+              type="text"
+              placeholder="Name"
+              className="pl-10 pr-3 py-2 border rounded w-full focus:border-indigo-400 focus:outline-none"
+              value={form.name}
+              onChange={(e) => handleChange('name', e.target.value)}
+              required
+            />
+          </div>
+          <div className="relative">
+            <FiUser className="absolute left-3 top-3 text-gray-400" />
+            <input
+              type="text"
+              placeholder="Surname"
+              className="pl-10 pr-3 py-2 border rounded w-full focus:border-indigo-400 focus:outline-none"
+              value={form.surname}
+              onChange={(e) => handleChange('surname', e.target.value)}
+              required
+            />
+          </div>
+          <div className="relative">
+            <FiMail className="absolute left-3 top-3 text-gray-400" />
+            <input
+              type="email"
+              placeholder="Email"
+              className="pl-10 pr-3 py-2 border rounded w-full focus:border-indigo-400 focus:outline-none"
+              value={form.email}
+              onChange={(e) => handleChange('email', e.target.value)}
+              required
+            />
+          </div>
+          <div className="relative">
+            <FiLock className="absolute left-3 top-3 text-gray-400" />
+            <input
+              type="password"
+              placeholder="Password"
+              className="pl-10 pr-3 py-2 border rounded w-full focus:border-indigo-400 focus:outline-none"
+              value={form.password}
+              onChange={(e) => handleChange('password', e.target.value)}
+              required
+            />
+          </div>
+          {error && <p className="text-red-500 text-sm text-center">{error}</p>}
+          <button
+            type="submit"
+            className="bg-indigo-600 text-white py-2 rounded-lg hover:bg-indigo-700 transition font-semibold mt-2"
+            disabled={loading}
+          >
+            {loading ? 'Signing Up...' : 'Sign Up'}
+          </button>
+        </form>
       </div>
     </div>
   );

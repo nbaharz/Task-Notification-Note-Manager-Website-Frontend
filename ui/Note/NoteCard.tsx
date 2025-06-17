@@ -1,7 +1,7 @@
 'use client';
 import { useState, useEffect, memo, useCallback } from 'react';
 import { motion } from 'framer-motion';
-import { FiTrash2 } from 'react-icons/fi';
+import { FiTrash2, FiStar, FiEdit2 } from 'react-icons/fi';
 
 interface NoteCardProps {
   title?: string;
@@ -54,22 +54,30 @@ const NoteCard = memo(({
         cursor-pointer text-center 
         overflow-hidden 
         group 
-        ${pinned ? 'ring-1 ring-indigo-100' : ''}`}
+        relative
+        ${pinned ? 'ring-2 ring-indigo-300' : ''}
+      `}
       style={{
         boxShadow: pinned 
           ? '0 4px 6px -1px rgba(99, 102, 241, 0.2), 0 2px 4px -1px rgba(99, 102, 241, 0.06)'
           : '0 2px 4px 0 rgba(0, 0, 0, 0.05)'
       }}
     >
-      {/* Delete button */}
-      <div className="absolute top-2 left-2 right-2 flex justify-between items-start">
+      {/* Delete and Pin button */}
+      <div className="absolute top-2 left-2 right-2 flex justify-between items-start z-10">
         {onDelete && (
           <button
             onClick={handleDelete}
             className="text-gray-400 hover:text-red-500 p-1 rounded-md transition-colors hover:bg-red-50/80"
+            title="Sil"
           >
             <FiTrash2 size={16} />
           </button>
+        )}
+        {pinned && (
+          <span className="text-yellow-400 bg-yellow-50/80 rounded-full p-1" title="Sabit">
+            <FiStar size={16} />
+          </span>
         )}
       </div>
 
@@ -79,16 +87,19 @@ const NoteCard = memo(({
         className="flex flex-col items-center justify-center flex-1 w-full px-4 py-6"
       >
         {isNew ? (
-          <input
-            autoFocus
-            value={inputValue}
-            onChange={(e) => setInputValue(e.target.value)}
-            onKeyDown={handleKeyDown}
-            placeholder="Enter title..."
-            className="text-sm text-center font-medium text-gray-800 placeholder-gray-400 bg-transparent border-b border-gray-300 focus:outline-none"
-          />
+          <div className="flex items-center gap-2 w-full">
+            <FiEdit2 className="text-indigo-400" />
+            <input
+              autoFocus
+              value={inputValue}
+              onChange={(e) => setInputValue(e.target.value)}
+              onKeyDown={handleKeyDown}
+              placeholder="Enter title..."
+              className="text-sm text-center font-medium text-gray-800 placeholder-gray-400 bg-transparent border-b border-gray-300 focus:outline-none w-full"
+            />
+          </div>
         ) : (
-          <p className="text-gray-800 font-medium group-hover:text-indigo-600 transition-colors line-clamp-2 leading-snug">
+          <p className="text-gray-800 font-medium group-hover:text-indigo-600 transition-colors line-clamp-2 leading-snug flex items-center justify-center gap-2">
             {title}
           </p>
         )}
