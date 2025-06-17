@@ -23,26 +23,39 @@ export default function BoardContent({
   onShowAllNotes,
 }: Props) {
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-4 gap-6">
-      <div className={`${activeTab === 'notes' ? 'block' : 'hidden'} md:block lg:col-span-1`}>
-        <NoteGrid
-          notes={notes}
-          onAddNote={onAddNote}
-          onViewNote={onViewNote}
-          onDeleteNote={onDeleteNote}
-          onShowAllNotes={onShowAllNotes}
-        />
-      </div>
-      <div className={`${activeTab === 'external' ? 'block' : 'hidden'} md:block`}>
-        <div className="w-full flex justify-center">
-          <ExternalServices />
+    <div className="px-4 sm:px-6 lg:px-8 py-6"> {/* Eşit yan boşluklar */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-4 gap-6"> {/* Gap değerini artırdık */}
+        {/* Notes */}
+        <div className={`${activeTab === 'notes' ? 'block' : 'hidden'} md:block lg:col-span-1`}>
+          <NoteGrid
+            notes={notes}
+            onAddNote={onAddNote}
+            onViewNote={onViewNote}
+            onDeleteNote={onDeleteNote}
+            onShowAllNotes={onShowAllNotes}
+          />
         </div>
-      </div>
-      <div className={`${activeTab === 'tasks' ? 'block' : 'hidden'} md:block`}>
-        <ToDoList />
-      </div>
-      <div className={`${activeTab === 'calendar' ? 'block' : 'hidden'} md:block`}>
-        <CustomCalendar />
+        
+        {/* External Services */}
+        <div className={`${activeTab === 'external' ? 'block' : 'hidden'} md:block`}>
+          <div className="h-full">
+            <ExternalServices />
+          </div>
+        </div>
+        
+        {/* ToDo List */}
+        <div className={`${activeTab === 'tasks' ? 'block' : 'hidden'} md:block`}>
+          <div className="h-full">
+            <ToDoList />
+          </div>
+        </div>
+        
+        {/* Calendar */}
+        <div className={`${activeTab === 'calendar' ? 'block' : 'hidden'} md:block`}>
+          <div className="h-full">
+            <CustomCalendar />
+          </div>
+        </div>
       </div>
     </div>
   );

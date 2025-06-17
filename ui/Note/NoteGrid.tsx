@@ -74,7 +74,7 @@ const NoteGrid = memo(({
     : pinnedNotes.slice(0, 5);
 
   return (
-    <div className="w-full lg:w-auto space-y-6">
+    <div className="w-full lg:w-auto space-y-6 ml-4 sm:ml-4">
       {/* {!isLoading && (
         <h2 className="text-lg sm:text-xl font-semibold text-gray-800">
           Quick Notes
