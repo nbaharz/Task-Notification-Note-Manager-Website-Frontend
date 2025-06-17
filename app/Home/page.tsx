@@ -1,10 +1,13 @@
 'use client'; 
 
 import { useState } from "react";
-import SignUpModal from "@/ui/SignUpModal"; // Yola göre ayarla 
+import SignUpModal from "@/ui/SignUpModal";
+
 
 export default function Home() {
-  const [showModal, setShowModal] = useState(false);
+  const [modalType, setModalType] = useState<null | 'signup' | 'login'>(null);
+
+  const closeModal = () => setModalType(null);
 
   return (
     <div>
@@ -16,7 +19,7 @@ export default function Home() {
         </a>
 
         <button
-          onClick={() => setShowModal(true)}
+          onClick={() => setModalType('signup')}
           className="mt-2 text-green-600 hover:underline text-lg"
         >
           Get Started
@@ -27,7 +30,8 @@ export default function Home() {
         <h2 className="text-3xl font-semibold">Features</h2>
       </div>
 
-      <SignUpModal isOpen={showModal} onClose={() => setShowModal(false)} />
+      <SignUpModal isOpen={modalType === 'signup'} onClose={closeModal} />
+  
     </div>
   );
 }

@@ -42,3 +42,7 @@ html {
   background-color: rgba(100, 100, 100, 0.3);
   border-radius: 4px;
 }
+
+:root {
+  --navbar-height: 600px; /* h-24 */
+}

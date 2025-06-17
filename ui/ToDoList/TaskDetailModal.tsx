@@ -13,6 +13,7 @@ interface Task {
   completed: boolean;
   description?: string;
   priority?: PriorityLevel;
+  date: string;
 }
 
 interface TaskDetailModalProps {
@@ -47,7 +48,7 @@ export default function TaskDetailModal({
   const [originalTask] = useState({ ...toDo });
 
   const handleTaskChange = (updatedTask: Task) => {
-    setTask(updatedTask);
+    setTask({ ...updatedTask, date: toDo.date });
     setHasChanges(true);
   };
 
@@ -55,46 +56,42 @@ export default function TaskDetailModal({
     <ModalWrapper onClose={onClose} maxWidth="max-w-md">
       <div className={`h-2 ${getPriorityColor(toDo.priority)} rounded-t-xl`} />
       <div className="relative bg-white/80 backdrop-blur-lg shadow-2xl rounded-b-xl p-8 border border-gray-200">
-        <div className={`flex items-center gap-3 px-4 py-3 rounded-xl mb-6 ${getPriorityColor(toDo.priority)} bg-opacity-90`}> 
-          <span className="text-white text-2xl"><FiX className="opacity-0" /></span>
-          <h3 className="flex-1 text-lg font-bold text-white tracking-wide text-center">Task Details</h3>
-          <button 
-            onClick={onClose}
-            className="text-white hover:text-gray-200 transition-colors text-2xl"
-            aria-label="Close"
-          >
-            <FiX />
-          </button>
-        </div>
+        <button 
+          onClick={onClose}
+          className="absolute top-4 right-4 text-gray-400 hover:text-gray-600 transition-colors text-2xl"
+          aria-label="Kapat"
+        >
+          <FiX />
+        </button>
         
-        <div className="space-y-6">
+        <div className="mt-2">
           <div>
             <label className="block text-xs font-semibold text-gray-600 mb-2 tracking-wide uppercase">
-              Task Title
+              Task
             </label>
             <input
               type="text"
               value={toDo.text}
               onChange={(e) => handleTaskChange({ ...toDo, text: e.target.value })}
               className="w-full p-3 border border-gray-200 rounded-lg bg-white/60 backdrop-blur focus:outline-none focus:ring-2 focus:ring-indigo-300 focus:border-indigo-400 transition shadow-sm placeholder-gray-400"
-              placeholder="Enter task title..."
+              
             />
           </div>
           
-          <div>
+          <div className="mt-4">
             <label className="block text-xs font-semibold text-gray-600 mb-2 tracking-wide uppercase">
-              Description
+              Details
             </label>
             <textarea
               value={toDo.description || ''}
               onChange={(e) => handleTaskChange({ ...toDo, description: e.target.value })}
               rows={3}
               className="w-full p-3 border border-gray-200 rounded-lg bg-white/60 backdrop-blur focus:outline-none focus:ring-2 focus:ring-indigo-300 focus:border-indigo-400 transition shadow-sm placeholder-gray-400"
-              placeholder="Add more details..."
+              placeholder="Daha fazla detay ekleyin..."
             />
           </div>
           
-          <div>
+          <div className="mt-4">
             <label className="block text-xs font-semibold text-gray-600 mb-2 tracking-wide uppercase">
               Priority
             </label>
@@ -110,7 +107,7 @@ export default function TaskDetailModal({
                   onClick={() => handleTaskChange({ ...toDo, priority })}
                   type="button"
                 >
-                  {priority.charAt(0).toUpperCase() + priority.slice(1)}
+                  {priority === 'high' ? 'High' : priority === 'medium' ? 'Medium' : 'Low'}
                 </button>
               ))}
             </div>
@@ -124,7 +121,7 @@ export default function TaskDetailModal({
                 onSave(toDo);
                 onClose();
               }}
-              className="px-5 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors font-medium shadow-sm"
+              className="px-5 py-2 border border-gray-300 rounded-lg text-gray-700/90 hover:bg-gray-50 transition-colors font-medium shadow-sm"
             >
               Save Changes
             </button>

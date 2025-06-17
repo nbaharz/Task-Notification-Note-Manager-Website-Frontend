@@ -5,3 +5,14 @@ export interface Note {
   pinned?: boolean; // Opsiyonel: Ana sayfada gösterilsin mi
   color?: string;
 }
+
+export interface Task {
+  id: number;
+  text: string;
+  completed: boolean;
+  description?: string;
+  priority?: 'high' | 'medium' | 'low';
+  date: string;
+}
+
+export type Priority = 'high' | 'medium' | 'low';

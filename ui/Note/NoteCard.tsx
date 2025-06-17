@@ -43,7 +43,7 @@ const NoteCard = memo(({
     <motion.div
       whileHover={{ 
         y: -5,
-        boxShadow: '0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 5px 10px -5px rgba(0, 0, 0, 0.04)', 
+        boxShadow: '0 10px 25px -5px rgba(99, 102, 241, 0.2), 0 5px 10px -5px rgba(99, 102, 241, 0.1)', 
       }}
       className={`
         w-full aspect-square max-w-[200px] rounded-xl 
@@ -93,9 +93,6 @@ const NoteCard = memo(({
           </p>
         )}
       </div>
-
-      {/* Bottom accent bar */}
-      <div className="absolute bottom-0 w-full h-1.5 bg-gradient-to-r from-indigo-400/80 to-purple-400/80 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
     </motion.div>
   );
 });

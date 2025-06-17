@@ -13,7 +13,7 @@ export default function CustomCalendar() {
   return (
     <div className="w-full  rounded-xl border border-white/50 bg-white/80 backdrop-blur-md transition-all p-4 shadow-[0_8px_30px_rgb(0,0,0,0.12)] hover:shadow-[0_8px_30px_rgb(0,0,0,0.16)]">
       <div className="flex items-center justify-between mb-2">
-        <h2 className="text-lg font-semibold text-gray-800">Calendar</h2>
+        <h2 className="text-lg font-semibold text-gray-800">Calendar / Reminders</h2>
         <button
           onClick={() => setShowCalendar(!showCalendar)}
           className="text-gray-600 hover:text-indigo-600 transition cursor-pointer"
@@ -24,7 +24,7 @@ export default function CustomCalendar() {
 
       <AnimatePresence initial={false}>
         {showCalendar && (
-          <motion.div
+          <motion.div 
             key="calendar"
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: 'auto' }}
