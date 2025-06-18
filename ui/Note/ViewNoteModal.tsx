@@ -77,15 +77,16 @@ function ViewNoteModal({ note, onClose, onSave, setNote }: ViewNoteModalProps) {
       maxHeight="max-h-[500px]"
     >
       <div className="p-4 flex justify-between items-center border-b border-gray-100">
-        <div className="flex items-center gap-2 relative">
+        <div className="flex items-center gap-3 relative">
           <button
             ref={colorButtonRef}
             onClick={() => setShowColorPicker(!showColorPicker)}
-            className={`w-8 h-8 rounded-full border-2 ${currentColor} flex items-center justify-center transition-all hover:scale-110 hover:shadow-md`}
+            className={`w-10 h-10 rounded-full border-2 ${currentColor} flex items-center justify-center transition-all hover:scale-110 hover:shadow-lg shadow-md`}
             aria-label="Choose note color"
           >
-            <FiDroplet className="text-gray-600 text-sm" />
+            <FiDroplet className="text-gray-600 text-lg" />
           </button>
+          <span className="text-gray-700 text-sm font-semibold">Pick color</span>
 
           <AnimatePresence>
             {showColorPicker && (
@@ -94,13 +95,13 @@ function ViewNoteModal({ note, onClose, onSave, setNote }: ViewNoteModalProps) {
                 animate={{ opacity: 1, scale: 1, y: 0 }}
                 exit={{ opacity: 0, scale: 0.95, y: -10 }}
                 transition={{ duration: 0.15 }}
-                className="absolute left-0 top-full mt-2 z-20 bg-white rounded-xl shadow-lg p-2"
+                className="absolute left-0 top-full mt-3 z-30 bg-white rounded-xl shadow-2xl p-4"
                 style={{
-                  transform: 'translateX(-25%)',
-                  minWidth: '200px',
+                  minWidth: '220px',
                 }}
               >
-                <div className="grid grid-cols-3 gap-2">
+                <div className="mb-2 text-xs text-gray-700 font-semibold text-center">Pick color</div>
+                <div className="grid grid-cols-4 gap-2">
                   {NOTE_COLORS.map((color) => (
                     <ColorButton
                       key={color.name}

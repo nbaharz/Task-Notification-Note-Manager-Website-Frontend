@@ -10,10 +10,20 @@ import SignUpModal from '@/ui/SignUpModal';
 export default function HomePage() {
   const [isLoginOpen, setIsLoginOpen] = useState(false);
   const [isSignUpOpen, setIsSignUpOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
 
   return (
     <div className="min-h-screen flex flex-col relative overflow-hidden bg-gradient-to-br from-[#f7fafc] via-[#fdf6e3] to-[#f7e2c5] text-gray-800 font-sans">
+      {/* Loading ekranı */}
+      {isLoading && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-white/80 dark:bg-[#181926]/80 backdrop-blur">
+          <div className="flex flex-col items-center gap-4">
+            <span className="w-12 h-12 border-4 border-indigo-400 border-t-transparent rounded-full animate-spin"></span>
+            <span className="text-indigo-600 font-semibold text-lg">Loading...</span>
+          </div>
+        </div>
+      )}
       {/* Profesyonel soft bloblar */}
       <div aria-hidden className="pointer-events-none absolute inset-0 -z-10">
         <div className="absolute top-[-100px] left-[-80px] w-[320px] h-[320px] bg-blue-200 opacity-20 rounded-full blur-3xl" />
@@ -23,13 +33,19 @@ export default function HomePage() {
 
       <main className="flex-1 flex flex-col items-center justify-center px-4">
         <section className="max-w-2xl w-full text-center py-16">
-            <h1 className="text-4xl md:text-5xl font-extrabold text-indigo-600 mb-4 drop-shadow-sm flex items-center justify-center gap-1">
+          <h1 className="text-4xl md:text-5xl font-extrabold text-indigo-600 mb-4 drop-shadow-sm flex items-center justify-center ">
+            <img
+              src="/morLogo.png"
+              alt="Welcome aboard!"
+              className="w-25 h-25 md:w-30 md:h-30 object-contain mr-2"
+              draggable={false}
+            />
             Welcome A
-            <span className="inline-block bg-white border-2 border-indigo-400 rounded-xl px-4 py-1 shadow font-black text-indigo-600">
+            <span className="inline-block bg-white border-2 border-indigo-400 rounded-xl px-1 py-1 shadow font-black text-indigo-600">
               Board
             </span>
             !
-            </h1>
+          </h1>
           <p className="text-lg md:text-xl text-gray-600 mb-8">
             Easily manage your notes, tasks, and ideas. Boost your productivity with a modern and clean interface!
           </p>
@@ -95,7 +111,13 @@ export default function HomePage() {
       <LoginModal
         isOpen={isLoginOpen}
         onClose={() => setIsLoginOpen(false)}
-        onSuccess={() => router.push('/Board')}
+        onSuccess={() => {
+          setIsLoading(true);
+          setTimeout(() => {
+            router.push('/Board');
+            localStorage.setItem('userName', Response.name); // response.name backend'den gelen isim
+          }, 1000);
+        }}
         onSignUpClick={() => setIsSignUpOpen(true)}
       />
     </div>

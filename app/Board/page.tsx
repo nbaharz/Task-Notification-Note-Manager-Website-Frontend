@@ -1,9 +1,9 @@
 'use client';
 
 import { useState } from 'react';
-import BoardTabs from './BoardTabs';
-import BoardContent from './BoardContext';
-import Modals from './Modals';
+import BoardTabs from '@/ui/Board/BoardTabs';
+import BoardContent from '@/ui/Board/BoardContext';
+import Modals from '@/ui/Board/Modals';
 import { useNotes } from '@/hooks/useNotes';
 import { Note } from '@/types/types';
 import Navbar from '../../ui/Navbar';

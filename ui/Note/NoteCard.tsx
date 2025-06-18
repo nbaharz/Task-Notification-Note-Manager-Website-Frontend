@@ -43,11 +43,12 @@ const NoteCard = memo(({
     <motion.div
       whileHover={{ 
         y: -5,
-        boxShadow: '0 10px 25px -5px rgba(99, 102, 241, 0.2), 0 5px 10px -5px rgba(99, 102, 241, 0.1)', 
+        rotate: -2,
+        boxShadow: '0 12px 32px -8px rgba(99,102,241,0.18), 0 6px 12px -6px rgba(99,102,241,0.10)',
       }}
       className={`
         w-full aspect-square max-w-[200px] rounded-xl 
-        border border-white/70
+        border border-dashed border-gray-300
         ${color}
         backdrop-blur-md 
         flex flex-col items-center justify-center 
@@ -55,14 +56,20 @@ const NoteCard = memo(({
         overflow-hidden 
         group 
         relative
+        shadow-[0_4px_16px_-4px_rgba(0,0,0,0.10)]
+        before:content-[''] before:absolute before:top-3 before:left-1/2 before:-translate-x-1/2 before:w-5 before:h-5 before:bg-gradient-to-br before:from-gray-200 before:to-gray-400 before:rounded-full before:shadow-inner
+        after:content-[''] after:absolute after:bottom-0 after:left-0 after:w-full after:h-3 after:bg-gradient-to-t after:from-yellow-100/60 after:to-transparent
         ${pinned ? 'ring-2 ring-indigo-300' : ''}
       `}
       style={{
         boxShadow: pinned 
           ? '0 4px 6px -1px rgba(99, 102, 241, 0.2), 0 2px 4px -1px rgba(99, 102, 241, 0.06)'
-          : '0 2px 4px 0 rgba(0, 0, 0, 0.05)'
+          : '0 2px 4px 0 rgba(0, 0, 0, 0.05)',
+        backgroundImage: `repeating-linear-gradient(0deg, transparent, transparent 23px, #e0e7ff 24px)`,
       }}
     >
+      {/* Kağıt deliği efekti */}
+      <span className="absolute top-3 left-1/2 -translate-x-1/2 w-4 h-4 bg-gray-200 border border-gray-300 rounded-full shadow-inner z-20"></span>
       {/* Delete and Pin button */}
       <div className="absolute top-2 left-2 right-2 flex justify-between items-start z-10">
         {onDelete && (
@@ -80,7 +87,6 @@ const NoteCard = memo(({
           </span>
         )}
       </div>
-
       {/* Content */}
       <div 
         onClick={!isNew ? onClick : undefined} 
