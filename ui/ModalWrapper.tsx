@@ -17,7 +17,7 @@ export default function ModalWrapper({
   children,
   position = 'center',
   maxWidth = 'max-w-xl',
-  maxHeight= 'max-h-xl',
+  maxHeight= 'max-h-2xl',
   scrollable = false,
 }: ModalWrapperProps) {
   // ESC ile kapatma

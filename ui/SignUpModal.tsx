@@ -3,31 +3,28 @@
 import { useEffect } from "react";
 import { useSignUp } from "@/hooks/useSignUp";
 import { FiUserPlus, FiMail, FiLock, FiUser, FiX } from "react-icons/fi";
+import { useModal } from '@/app/context/ModalContext';
 
-interface SignUpModalProps {
-  isOpen: boolean;
-  onClose: () => void;
-}
-
-export default function SignUpModal({ isOpen, onClose }: SignUpModalProps) {
-  const { form, error, handleChange, handleSubmit, loading } = useSignUp(onClose);
+export default function SignUpModal() {
+  const { modalType, closeModal } = useModal();
+  const { form, error, handleChange, handleSubmit, loading } = useSignUp(closeModal);
 
   useEffect(() => {
     const handleEsc = (e: KeyboardEvent) => {
-      if (e.key === "Escape") onClose();
+      if (e.key === "Escape") closeModal();
     };
     document.addEventListener("keydown", handleEsc);
     return () => document.removeEventListener("keydown", handleEsc);
-  }, [onClose]);
+  }, [closeModal]);
 
-  if (!isOpen) return null;
+  if (modalType !== 'signup') return null;
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center">
-      <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" onClick={onClose}></div>
+      <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" onClick={closeModal}></div>
       <div className="relative z-10 w-[90%] max-w-md rounded-2xl bg-white p-8 shadow-2xl">
         <button
-          onClick={onClose}
+          onClick={closeModal}
           className="absolute top-3 right-3 text-gray-400 hover:text-red-500 transition"
           aria-label="Kapat"
         >

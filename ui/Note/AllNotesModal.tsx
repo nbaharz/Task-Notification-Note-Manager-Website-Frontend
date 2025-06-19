@@ -1,29 +1,23 @@
 'use client';
 import { motion } from 'framer-motion';
 import { FiX, FiTrash2,FiBookmark } from 'react-icons/fi';
-import ModalWrapper from '../ModalWrapper';
+import { useNote } from '@/app/context/NoteContext';
+import { useModal } from '@/app/context/ModalContext';
+import { Note } from '@/types/types';
 
-interface Note {
-  title: string;
-  content: string;
-  pinned?: boolean;
-}
+export default function AllNotesModal() {
+  const { notes, setSelectedNote, updateNote, removeNote } = useNote();
+  const { closeModal } = useModal();
 
-interface AllNotesModalProps {
-  notes: Note[];
-  onClose: () => void;
-  onSelectNote: (note: Note) => void;
-  togglePin: (title: string) => void;
-  onDeleteNote: (titleToDelete: string) => void;
-}
+  const handleSelectNote = (note: Note) => {
+    setSelectedNote(note);
+    closeModal();
+  };
 
-export default function AllNotesModal({
-  notes,
-  onClose,
-  onSelectNote,
-  togglePin,
-  onDeleteNote,
-}: AllNotesModalProps) {
+  const handleTogglePin = (note: Note) => {
+    updateNote({ ...note, pinned: !note.pinned });
+  };
+
   return (
     <motion.div
       initial={{ opacity: 0 }}
@@ -38,7 +32,7 @@ export default function AllNotesModal({
       >
         <div className="p-6 flex justify-between items-center">
           <h2 className="text-xl font-bold text-gray-900">All Notes</h2>
-          <button onClick={onClose} className="text-gray-500 hover:text-gray-700">
+          <button onClick={closeModal} className="text-gray-500 hover:text-gray-700">
             <FiX size={20} />
           </button>
         </div>
@@ -50,12 +44,12 @@ export default function AllNotesModal({
             <ul className="space-y-3">
               {notes.map((note, idx) => (
                 <motion.li
-                  key={idx}
+                  key={note.id}
                   className=" py-3 "
                 >
                   <div className="flex justify-between items-start">
                     <div 
-                      onClick={() => onSelectNote(note)} 
+                      onClick={() => handleSelectNote(note)} 
                       className="flex-1 cursor-pointer"
                     >
                       <div className="flex items-center gap-2">
@@ -71,7 +65,7 @@ export default function AllNotesModal({
                       <button
                         onClick={(e) => {
                           e.stopPropagation();
-                          togglePin(note.title);
+                          handleTogglePin(note);
                         }}
                         className={`p-1 rounded-full ${
                           note.pinned 
@@ -84,7 +78,7 @@ export default function AllNotesModal({
                       <button
                         onClick={(e) => {
                           e.stopPropagation();
-                          onDeleteNote(note.title);
+                          removeNote(note.id);
                         }}
                         className="p-1 rounded-full text-gray-400 hover:text-red-500 hover:bg-red-50"
                       >

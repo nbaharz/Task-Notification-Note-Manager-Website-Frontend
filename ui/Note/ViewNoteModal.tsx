@@ -3,29 +3,28 @@ import { useState, useEffect, useRef, useCallback, memo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { FiX, FiDroplet } from 'react-icons/fi';
 import ModalWrapper from '../ModalWrapper';
+import { useNote } from '@/app/context/NoteContext';
+import { useModal } from '@/app/context/ModalContext';
 import { Note } from '@/types/types';
 import ColorButton from './ColorButton';
 import { NOTE_COLORS } from './constants';
 
-interface ViewNoteModalProps {
-  note: Note;
-  onClose: () => void;
-  onSave: (updatedNote: Note) => void;
-  setNote?: (note: Note) => void;
-}
-
-function ViewNoteModal({ note, onClose, onSave, setNote }: ViewNoteModalProps) {
-  const [currentTitle, setCurrentTitle] = useState(note.title);
-  const [currentContent, setCurrentContent] = useState(note.content);
-  const [currentColor, setCurrentColor] = useState(note.color || 'bg-white/70');
+function ViewNoteModal() {
+  const { selectedNote, updateNote, setSelectedNote } = useNote();
+  const { closeModal } = useModal();
+  const note = selectedNote;
+  const [currentTitle, setCurrentTitle] = useState(note?.title || '');
+  const [currentContent, setCurrentContent] = useState(note?.content || '');
+  const [currentColor, setCurrentColor] = useState(note?.color || 'bg-white/70');
   const [showColorPicker, setShowColorPicker] = useState(false);
   const colorButtonRef = useRef<HTMLButtonElement>(null);
 
-  // Update internal states when note prop changes
   useEffect(() => {
-    setCurrentTitle(note.title);
-    setCurrentContent(note.content);
-    setCurrentColor(note.color || 'bg-white/70');
+    if (note) {
+      setCurrentTitle(note.title);
+      setCurrentContent(note.content);
+      setCurrentColor(note.color || 'bg-white/70');
+    }
   }, [note]);
 
   const handleTitleChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
@@ -42,17 +41,17 @@ function ViewNoteModal({ note, onClose, onSave, setNote }: ViewNoteModalProps) {
   }, []);
 
   const handleSaveAndClose = useCallback(() => {
-    const updatedNote = {
+    if (!note) return;
+    const updatedNote: Note = {
       ...note,
       title: currentTitle.trim(),
       content: currentContent.trim(),
       color: currentColor,
     };
-
-    onSave(updatedNote);
-    setNote?.(updatedNote);
-    onClose();
-  }, [note, currentTitle, currentContent, currentColor, onSave, setNote, onClose]);
+    updateNote(updatedNote);
+    setSelectedNote(null);
+    closeModal();
+  }, [note, currentTitle, currentContent, currentColor, updateNote, setSelectedNote, closeModal]);
 
   const handleClickOutside = useCallback((event: MouseEvent) => {
     if (colorButtonRef.current && !colorButtonRef.current.contains(event.target as Node)) {
@@ -73,8 +72,8 @@ function ViewNoteModal({ note, onClose, onSave, setNote }: ViewNoteModalProps) {
     <ModalWrapper
       onClose={handleSaveAndClose}
       position="center"
-      maxWidth="max-w-[700px]"
-      maxHeight="max-h-[500px]"
+      maxWidth="max-w-[900px]"
+      maxHeight="max-h-[700px]"
     >
       <div className="p-4 flex justify-between items-center border-b border-gray-100">
         <div className="flex items-center gap-3 relative">

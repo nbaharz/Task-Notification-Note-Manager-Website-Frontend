@@ -5,35 +5,34 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { FiPlus, FiStar } from 'react-icons/fi';
 import NoteCard from '@/ui/Note/NoteCard';
 import NoteCardSkeleton from '@/ui/Note/NoteCardSkeleton';
-import { Note } from '../../types/types';
+import { useNote } from '@/app/context/NoteContext';
+import { useModal } from '@/app/context/ModalContext';
+import { Note } from '@/types/types';
 
-interface NoteGridProps {
-  notes: Note[];
-  onAddNote: (title: string) => void;
-  onViewNote: (note: Note) => void;
-  onDeleteNote: (title: string) => void;
-  onShowAllNotes: () => void;
-  onTogglePin: (title: string) => void;
-}
+const NoteGrid = () => {
+  const {
+    notes,
+    addNote,
+    removeNote,
+    updateNote,
+    selectedNote,
+    setSelectedNote,
+  } = useNote();
+  const { openModal } = useModal();
 
-const NoteGrid = memo(({
-  notes,
-  onAddNote,
-  onViewNote,
-  onDeleteNote,
-  onShowAllNotes,
-  onTogglePin,
-}: NoteGridProps) => {
   const [isLoading, setIsLoading] = useState(true);
   const [isAddingNote, setIsAddingNote] = useState(false);
   const [showPinnedOnly, setShowPinnedOnly] = useState(false);
   const [showAddButton, setShowAddButton] = useState(false);
   const addNoteRef = useRef<HTMLDivElement>(null);
+  const [isMounted, setIsMounted] = useState(false);
 
   useEffect(() => {
     const timeout = setTimeout(() => setIsLoading(false), 200);
     return () => clearTimeout(timeout);
   }, []);
+
+  useEffect(() => { setIsMounted(true); }, []);
 
   const handleClickOutside = useCallback((e: MouseEvent) => {
     if (
@@ -58,13 +57,13 @@ const NoteGrid = memo(({
   }, []);
 
   const handleAddNote = useCallback((title: string) => {
-    onAddNote(title);
+    addNote({ id: Date.now().toString(), title, content: '', color: '' });
     setIsAddingNote(false);
-  }, [onAddNote]);
+  }, [addNote]);
 
   // Filtreleme
-  const pinnedNotes = notes.filter((n) => n.pinned);
-  const displayNotes = isLoading
+  const pinnedNotes = (notes as Note[]).filter((n) => n.pinned);
+  const displayNotes: Note[] | (Note | null)[] = isLoading
     ? Array(6).fill(null)
     : showPinnedOnly
       ? pinnedNotes
@@ -84,7 +83,9 @@ const NoteGrid = memo(({
         >
           <FiStar className="text-yellow-400" />
           <span className="font-semibold">Show Pinned</span>
-          <span className="ml-1 text-xs bg-yellow-100 text-yellow-700 px-2 py-0.5 rounded-full">{pinnedNotes.length}</span>
+          {isMounted && (
+            <span className="ml-1 text-xs bg-yellow-100 text-yellow-700 px-2 py-0.5 rounded-full">{pinnedNotes.length}</span>
+          )}
         </button>
         <button
           className={`flex items-center gap-2 px-5 py-2 rounded-t-lg border-b-2 transition-all
@@ -95,7 +96,11 @@ const NoteGrid = memo(({
           onClick={() => setShowPinnedOnly(false)}
         >
           <span className="font-semibold">Show All</span>
-          <span className="ml-1 text-xs bg-indigo-100 text-indigo-700 px-2 py-0.5 rounded-full">{notes.length}</span>
+          {isMounted && (
+            <span className="ml-1 text-xs bg-indigo-100 text-indigo-700 px-2 py-0.5 rounded-full">
+              {notes.length}
+            </span>
+          )}
         </button>
       </div>
 
@@ -113,11 +118,14 @@ const NoteGrid = memo(({
             >
               <NoteCard
                 title={note.title}
-                pinned={note.pinned}
-                onClick={() => onViewNote(note)}
-                onDelete={() => onDeleteNote(note.title)}
+                pinned={!!note.pinned}
+                onClick={() => {
+                  setSelectedNote(note);
+                  openModal('viewNote');
+                }}
+                onDelete={() => removeNote(note.id)}
                 color={note.color}
-                onTogglePin={() => onTogglePin(note.title)}
+                onTogglePin={() => updateNote({ ...note, pinned: !note.pinned })}
               />
             </motion.div>
           )
@@ -168,8 +176,6 @@ const NoteGrid = memo(({
       </div>
     </div>
   );
-});
-
-NoteGrid.displayName = 'NoteGrid';
+};
 
 export default NoteGrid;

@@ -2,21 +2,16 @@
 import React, { useState } from 'react';
 import { login } from '@/app/api/UserApi/Login';
 import { FiMail, FiLock, FiLogIn, FiX, FiUserPlus } from 'react-icons/fi';
+import { useModal } from '@/app/context/ModalContext';
 
-interface LoginModalProps {
-  isOpen: boolean;
-  onClose: () => void;
-  onSuccess?: (user: any) => void;
-  onSignUpClick?: () => void; // Yeni prop
-}
-
-export default function LoginModal({ isOpen, onClose, onSuccess, onSignUpClick }: LoginModalProps) {
+export default function LoginModal({ onSuccess, onSignUpClick }: { onSuccess?: (user: any) => void; onSignUpClick?: () => void }) {
+  const { modalType, closeModal } = useModal();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
-  if (!isOpen) return null;
+  if (modalType !== 'login') return null;
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -25,7 +20,7 @@ export default function LoginModal({ isOpen, onClose, onSuccess, onSignUpClick }
     try {
       const data = await login({ email, password });
       onSuccess?.(data);
-      onClose();
+      closeModal();
     } catch (err: any) {
       setError(err.message || 'Bir hata oluştu.' || err.status);
     } finally {
@@ -35,10 +30,10 @@ export default function LoginModal({ isOpen, onClose, onSuccess, onSignUpClick }
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center">
-      <div className="absolute inset-0 bg-black/50 backdrop-blur-sm fade-in" onClick={onClose}></div>
+      <div className="absolute inset-0 bg-black/50 backdrop-blur-sm fade-in" onClick={closeModal}></div>
       <div className="relative z-10 w-[90%] max-w-sm rounded-2xl bg-white p-8 shadow-2xl scale-in">
         <button
-          onClick={onClose}
+          onClick={closeModal}
           className="absolute top-3 right-3 text-gray-400 hover:text-red-500 transition"
           aria-label="Kapat"
         >
@@ -86,7 +81,7 @@ export default function LoginModal({ isOpen, onClose, onSuccess, onSignUpClick }
           <button
             type="button"
             onClick={() => {
-              onClose();
+              closeModal();
               onSignUpClick && onSignUpClick();
             }}
             className="inline-flex items-center gap-1 text-indigo-600 hover:underline font-semibold"

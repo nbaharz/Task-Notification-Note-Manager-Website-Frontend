@@ -6,12 +6,12 @@ import {FiArrowRight } from "react-icons/fi";
 import Footer from '@/ui/Footer';
 import LoginModal from '@/ui/LoginModal';
 import SignUpModal from '@/ui/SignUpModal';
+import { useModal } from '@/app/context/ModalContext';
 
 export default function HomePage() {
-  const [isLoginOpen, setIsLoginOpen] = useState(false);
-  const [isSignUpOpen, setIsSignUpOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
+  const { openModal } = useModal();
 
   return (
     <div className="min-h-screen flex flex-col relative overflow-hidden bg-gradient-to-br from-[#f7fafc] via-[#fdf6e3] to-[#f7e2c5] text-gray-800 font-sans">
@@ -51,7 +51,7 @@ export default function HomePage() {
           </p>
           <div className="flex justify-center">
             <button
-              onClick={() => setIsLoginOpen(true)}
+              onClick={() => openModal('login')}
               className="flex items-center gap-2 px-8 py-3 rounded-lg bg-indigo-500 text-white font-semibold shadow-md hover:bg-indigo-700 transition text-lg"
             >
               Get Started <FiArrowRight className="ml-1" />
@@ -101,24 +101,18 @@ export default function HomePage() {
             </span>
           </div>
         </section>
-       
       </main>
       <Footer />
-      <SignUpModal
-        isOpen={isSignUpOpen}
-        onClose={() => setIsSignUpOpen(false)}
-      />
+      <SignUpModal />
       <LoginModal
-        isOpen={isLoginOpen}
-        onClose={() => setIsLoginOpen(false)}
         onSuccess={() => {
           setIsLoading(true);
           setTimeout(() => {
             router.push('/Board');
-            localStorage.setItem('userName', Response.name); // response.name backend'den gelen isim
+            // localStorage.setItem('userName', Response.name); // response.name backend'den gelen isim
           }, 1000);
         }}
-        onSignUpClick={() => setIsSignUpOpen(true)}
+        onSignUpClick={() => openModal('signup')}
       />
     </div>
   );

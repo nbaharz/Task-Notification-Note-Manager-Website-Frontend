@@ -1,7 +1,11 @@
 import './globals.css'
 import { Inter } from 'next/font/google'
 import { ThemeProvider } from './context/ThemeContext'
-
+import { UserProvider } from './context/UserContext'
+import { BoardProvider } from './context/BoardContext'
+import { NoteProvider } from './context/NoteContext'
+import { ToDoProvider } from './context/ToDoContext'
+import { ModalProvider } from './context/ModalContext'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -28,9 +32,19 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <body className={`${inter.className} bg-background-light dark:bg-background-dark text-text-light dark:text-text-dark transition-colors duration-200`}>
         <ThemeProvider>
-          <ThemeWrapper>
-            {children}
-          </ThemeWrapper>
+          <UserProvider>
+            <BoardProvider>
+              <NoteProvider>
+                <ToDoProvider>
+                  <ModalProvider>
+                    <ThemeWrapper>
+                      {children}
+                    </ThemeWrapper>
+                  </ModalProvider>
+                </ToDoProvider>
+              </NoteProvider>
+            </BoardProvider>
+          </UserProvider>
         </ThemeProvider>
       </body>
     </html>

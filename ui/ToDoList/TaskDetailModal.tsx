@@ -4,6 +4,8 @@ import { FiX } from 'react-icons/fi';
 // import { motion, AnimatePresence } from 'framer-motion';
 import ModalWrapper from '../ModalWrapper';
 import { useState } from 'react';
+import { useToDo } from '@/app/context/ToDoContext';
+import { useModal } from '@/app/context/ModalContext';
 
 type PriorityLevel = 'high' | 'medium' | 'low';
 
@@ -14,13 +16,6 @@ interface Task {
   description?: string;
   priority?: PriorityLevel;
   date: string;
-}
-
-interface TaskDetailModalProps {
-  toDo?: Task | null;
-  onClose: () => void;
-  onSave: (task: Task) => void;
-  setTask: (task: Task) => void;
 }
 
 const priorityOptions: PriorityLevel[] = ['high', 'medium', 'low'];
@@ -36,28 +31,34 @@ const getPriorityColor = (priority?: PriorityLevel) => {
   return priority ? colors[priority] : colors.default;
 };
 
-export default function TaskDetailModal({ 
-  toDo, 
-  onClose, 
-  onSave, 
-  setTask 
-}: TaskDetailModalProps) {
+export default function TaskDetailModal() {
+  const { selectedTask, setSelectedTask, updateTask } = useToDo();
+  const { closeModal } = useModal();
+  const toDo = selectedTask;
   if (!toDo) return null;
 
   const [hasChanges, setHasChanges] = useState(false);
   const [originalTask] = useState({ ...toDo });
 
   const handleTaskChange = (updatedTask: Task) => {
-    setTask({ ...updatedTask, date: toDo.date });
+    setSelectedTask({ ...updatedTask, date: toDo.date });
     setHasChanges(true);
   };
 
+  const handleSaveAndClose = () => {
+    if (toDo) {
+      updateTask(toDo);
+      setSelectedTask(null);
+      closeModal();
+    }
+  };
+
   return (
-    <ModalWrapper onClose={onClose} maxWidth="max-w-md">
+    <ModalWrapper onClose={handleSaveAndClose} maxWidth="max-w-md">
       <div className={`h-2 ${getPriorityColor(toDo.priority)} rounded-t-xl`} />
       <div className="relative bg-white/80 backdrop-blur-lg shadow-2xl rounded-b-xl p-8 border border-gray-200">
         <button 
-          onClick={onClose}
+          onClick={handleSaveAndClose}
           className="absolute top-4 right-4 text-gray-400 hover:text-gray-600 transition-colors text-2xl"
           aria-label="Kapat"
         >
@@ -117,10 +118,7 @@ export default function TaskDetailModal({
         {hasChanges && (
           <div className="flex justify-end mt-8">
             <button
-              onClick={() => {
-                onSave(toDo);
-                onClose();
-              }}
+              onClick={handleSaveAndClose}
               className="px-5 py-2 border border-gray-300 rounded-lg text-gray-700/90 hover:bg-gray-50 transition-colors font-medium shadow-sm"
             >
               Save Changes

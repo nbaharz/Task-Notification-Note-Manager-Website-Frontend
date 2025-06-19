@@ -1,5 +1,5 @@
 export interface Note {
-  // id:string;
+  id: string;
   title: string;
   content: string;
   pinned?: boolean; // Opsiyonel: Ana sayfada gösterilsin mi
@@ -16,3 +16,17 @@ export interface Task {
 }
 
 export type Priority = 'high' | 'medium' | 'low';
+
+
+export type TrackedProduct = {
+  id: string;
+  title: string;
+  productUrl: string;
+  recentPrice: string;
+  isDiscounted: boolean;
+  lastFetchTime: string;
+  notifyOnDiscount: boolean;
+};
+
+
+

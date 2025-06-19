@@ -7,7 +7,6 @@ import {
   PointerSensor,
   useSensor,
   useSensors,
-  DragEndEvent,
 } from '@dnd-kit/core';
 import {
   arrayMove,
@@ -16,33 +15,58 @@ import {
   verticalListSortingStrategy,
 } from '@dnd-kit/sortable';
 import { restrictToVerticalAxis, restrictToParentElement } from '@dnd-kit/modifiers';
-import { Task } from '@/types/types';
+import { useToDo } from '@/app/context/ToDoContext';
+import { useModal } from '@/app/context/ModalContext';
 import { TaskItem } from './TaskItem';
 import TaskSkeleton from './ToDoListSkeleton';
+import { useState, useEffect } from 'react';
 
-interface TaskListProps {
-  tasks: Task[];
-  isLoading: boolean;
-  onToggleComplete: (id: number) => void;
-  onDelete: (id: number) => void;
-  onOpenModal: (task: Task) => void;
-  onDragEnd: (event: DragEndEvent) => void;
-}
+export function TaskList() {
+  const { tasks, updateTask, removeTask, setSelectedTask } = useToDo();
+  const { openModal } = useModal();
+  const [isLoading, setIsLoading] = useState(false);
+  const [orderedTasks, setOrderedTasks] = useState(tasks);
+  const [isMounted, setIsMounted] = useState(false);
 
-export function TaskList({ 
-  tasks, 
-  isLoading, 
-  onToggleComplete, 
-  onDelete, 
-  onOpenModal, 
-  onDragEnd 
-}: TaskListProps) {
+  useEffect(() => {
+    setOrderedTasks(tasks);
+    setIsMounted(true);
+  }, [tasks]);
+
+  const handleToggleComplete = (id: number) => {
+    const task = tasks.find(t => t.id === id);
+    if (task) {
+      updateTask({ ...task, completed: !task.completed });
+    }
+  };
+
+  const handleDelete = (id: number) => {
+    removeTask(id);
+  };
+
+  const handleOpenModal = (task: any) => {
+    setSelectedTask(task);
+    openModal('taskDetail');
+  };
+
+  const handleDragEnd = (event: any) => {
+    const { active, over } = event;
+    if (active.id !== over?.id) {
+      const oldIndex = orderedTasks.findIndex(t => t.id === active.id);
+      const newIndex = orderedTasks.findIndex(t => t.id === over.id);
+      const newTasks = arrayMove(orderedTasks, oldIndex, newIndex);
+      setOrderedTasks(newTasks);
+    }
+  };
+
   const sensors = useSensors(
     useSensor(PointerSensor),
     useSensor(KeyboardSensor, {
       coordinateGetter: sortableKeyboardCoordinates,
     })
   );
+
+  if (!isMounted) return null;
 
   if (isLoading) {
     return (
@@ -54,7 +78,7 @@ export function TaskList({
     );
   }
 
-  if (tasks.length === 0) {
+  if (orderedTasks.length === 0) {
     return (
       <div className="text-center text-gray-500 mt-4 py-4">
         Bu tarih için görev bulunmuyor.
@@ -67,29 +91,29 @@ export function TaskList({
       <DndContext
         sensors={sensors}
         collisionDetection={closestCenter}
-        onDragEnd={onDragEnd}
+        onDragEnd={handleDragEnd}
         modifiers={[restrictToVerticalAxis, restrictToParentElement]}
       >
         <SortableContext
-          items={tasks.map(task => task.id)}
+          items={orderedTasks.map(task => task.id)}
           strategy={verticalListSortingStrategy}
         >
           <motion.ul 
             layout={false}
             className="space-y-3 mt-4 pr-2 pb-2 relative"
             style={{
-              maxHeight: tasks.length > 5 ? '350px' : 'none',
-              overflowY: tasks.length > 5 ? 'auto' : 'hidden'
+              maxHeight: orderedTasks.length > 5 ? '350px' : 'none',
+              overflowY: orderedTasks.length > 5 ? 'auto' : 'hidden'
             }}
           >
             <AnimatePresence mode="popLayout">
-              {tasks.map(task => (
+              {orderedTasks.map(task => (
                 <TaskItem
                   key={task.id}
                   task={task}
-                  onToggleComplete={onToggleComplete}
-                  onDelete={onDelete}
-                  onOpenModal={onOpenModal}
+                  onToggleComplete={handleToggleComplete}
+                  onDelete={handleDelete}
+                  onOpenModal={handleOpenModal}
                 />
               ))}
             </AnimatePresence>

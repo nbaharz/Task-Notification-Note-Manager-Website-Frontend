@@ -59,9 +59,10 @@ export function useNotes() {
 
     setError(null); 
     const newNote: Note = {
+      id: Date.now().toString(), //example
       title: trimmedTitle,
       content: '', 
-      pinned: false, // <-- HER ZAMAN PİNSİZ EKLE
+      pinned: false, 
     };
 
     setNotes(prev => [newNote, ...prev].sort((a, b) => {

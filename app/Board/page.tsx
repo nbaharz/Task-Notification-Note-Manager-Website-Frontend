@@ -5,7 +5,7 @@ import BoardTabs from '@/ui/Board/BoardTabs';
 import BoardContent from '@/ui/Board/BoardContext';
 import Modals from '@/ui/Board/Modals';
 import { useNotes } from '@/hooks/useNotes';
-import { Note } from '@/types/types';
+import { Note, TrackedProduct}  from '@/types/types';
 import Navbar from '../../ui/Navbar';
 import Footer from '../../ui/Footer';
 import EventReminderModal from '@/ui/Calendar/EventReminderModal';
@@ -18,12 +18,6 @@ export default function NoteBoard() {
   const [eventReminders, setEventReminders] = useState<any[]>([]);
 
   const {
-    notes,
-    addNote,
-    deleteNote,
-    updateNote,
-    togglePin,
-    selectedNote,
     setSelectedNote,
   } = useNotes();
 
@@ -72,30 +66,11 @@ export default function NoteBoard() {
       <main className="flex-1">
         <BoardTabs activeTab={activeTab} setActiveTab={setActiveTab} />
         <BoardContent
-          onTogglePin={togglePin}
           activeTab={activeTab}
-          notes={notes}
-          onAddNote={addNote}
-          onViewNote={handleViewNote}
-          onDeleteNote={deleteNote}
-          onShowAllNotes={() => setShowAllNotesModal(true)}
-          // Yeni eklenen props:
-          onOpenEventReminderModal={() => setShowEventReminderModal(true)}
           eventReminders={eventReminders}
+          onOpenEventReminderModal={() => setShowEventReminderModal(true)}
         />
-        <Modals
-          showViewModal={showViewModal}
-          setShowViewModal={setShowViewModal}
-          showAllNotesModal={showAllNotesModal}
-          setShowAllNotesModal={setShowAllNotesModal}
-          selectedNote={selectedNote}
-          setSelectedNote={setSelectedNote}
-          notes={notes}
-          updateNote={updateNote}
-          togglePin={togglePin}
-          deleteNote={deleteNote}
-        />
-        {/* Modalı burada, sayfa seviyesinde aç! */}
+        <Modals />
         <EventReminderModal
           open={showEventReminderModal}
           onClose={() => setShowEventReminderModal(false)}
