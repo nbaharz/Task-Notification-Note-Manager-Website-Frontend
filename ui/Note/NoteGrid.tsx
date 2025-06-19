@@ -72,7 +72,7 @@ const NoteGrid = memo(({
 
   return (
     <div className="w-full lg:w-auto space-y-6 ml-4 sm:ml-4">
-      {/* Tablar */}
+      {/* Tablar farkli dosyaya tasinabilir*/}
       <div className="flex items-center gap-2 mb-6">
         <button
           className={`flex items-center gap-2 px-5 py-2 rounded-t-lg border-b-2 transition-all

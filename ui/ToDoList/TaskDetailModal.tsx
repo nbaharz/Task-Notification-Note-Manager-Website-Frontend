@@ -1,7 +1,7 @@
 'use client';
 
 import { FiX } from 'react-icons/fi';
-import { motion, AnimatePresence } from 'framer-motion';
+// import { motion, AnimatePresence } from 'framer-motion';
 import ModalWrapper from '../ModalWrapper';
 import { useState } from 'react';
 

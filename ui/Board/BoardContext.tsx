@@ -2,7 +2,7 @@
 import NoteGrid from '@/ui/Note/NoteGrid';
 import ExternalServices from '@/ui/ExternalServices/ExternalService';
 import ToDoList from '@/ui/ToDoList/toDoList';
-import CustomCalendar from '@/ui/Calendar/Calendar';
+import CalendarPanel from '@/ui/Calendar/CalendarPanel';
 import { Note } from '@/types/types';
 
 interface Props {
@@ -13,6 +13,8 @@ interface Props {
   onDeleteNote: (title: string) => void;
   onShowAllNotes: () => void;
   onTogglePin: (title: string) => void; // <-- BURAYI EKLE
+  onOpenEventReminderModal?: () => void;
+  eventReminders?: any[];
 }
 
 export default function BoardContent({
@@ -22,7 +24,9 @@ export default function BoardContent({
   onViewNote,
   onDeleteNote,
   onShowAllNotes,
-  onTogglePin
+  onTogglePin,
+  onOpenEventReminderModal,
+  eventReminders,
 }: Props) {
   return (
     <div className="px-4 sm:px-6 lg:px-8 py-6"> {/* Eşit yan boşluklar */}
@@ -56,7 +60,10 @@ export default function BoardContent({
         {/* Calendar */}
         <div className={`${activeTab === 'calendar' ? 'block' : 'hidden'} md:block`}>
           <div className="h-full">
-            <CustomCalendar />
+            <CalendarPanel
+              onOpenEventReminderModal={onOpenEventReminderModal}
+              eventReminders={eventReminders}
+            />
           </div>
         </div>
       </div>

@@ -8,10 +8,14 @@ import { useNotes } from '@/hooks/useNotes';
 import { Note } from '@/types/types';
 import Navbar from '../../ui/Navbar';
 import Footer from '../../ui/Footer';
+import EventReminderModal from '@/ui/Calendar/EventReminderModal';
+
 export default function NoteBoard() {
   const [activeTab, setActiveTab] = useState('notes');
   const [showViewModal, setShowViewModal] = useState(false);
   const [showAllNotesModal, setShowAllNotesModal] = useState(false);
+  const [showEventReminderModal, setShowEventReminderModal] = useState(false);
+  const [eventReminders, setEventReminders] = useState<any[]>([]);
 
   const {
     notes,
@@ -26,6 +30,11 @@ export default function NoteBoard() {
   const handleViewNote = (note: Note) => {
     setSelectedNote(note);
     setShowViewModal(true);
+  };
+
+  // Event Reminder kaydetme fonksiyonu
+  const handleSaveEventReminder = (event: any) => {
+    setEventReminders(prev => [...prev, { ...event, id: Date.now() }]);
   };
 
   return (
@@ -63,13 +72,16 @@ export default function NoteBoard() {
       <main className="flex-1">
         <BoardTabs activeTab={activeTab} setActiveTab={setActiveTab} />
         <BoardContent
+          onTogglePin={togglePin}
           activeTab={activeTab}
           notes={notes}
           onAddNote={addNote}
           onViewNote={handleViewNote}
           onDeleteNote={deleteNote}
           onShowAllNotes={() => setShowAllNotesModal(true)}
-          onTogglePin={togglePin} // <-- Bunu ekle!
+          // Yeni eklenen props:
+          onOpenEventReminderModal={() => setShowEventReminderModal(true)}
+          eventReminders={eventReminders}
         />
         <Modals
           showViewModal={showViewModal}
@@ -82,6 +94,12 @@ export default function NoteBoard() {
           updateNote={updateNote}
           togglePin={togglePin}
           deleteNote={deleteNote}
+        />
+        {/* Modalı burada, sayfa seviyesinde aç! */}
+        <EventReminderModal
+          open={showEventReminderModal}
+          onClose={() => setShowEventReminderModal(false)}
+          onSave={handleSaveEventReminder}
         />
       </main>
       <Footer/>

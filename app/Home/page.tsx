@@ -33,15 +33,15 @@ export default function HomePage() {
 
       <main className="flex-1 flex flex-col items-center justify-center px-4">
         <section className="max-w-2xl w-full text-center py-16">
-          <h1 className="text-4xl md:text-5xl font-extrabold text-indigo-600 mb-4 drop-shadow-sm flex items-center justify-center ">
+          <h1 className="text-4xl md:text-5xl font-extrabold  text-indigo-500 mb-4 drop-shadow-sm flex items-center justify-center ">
             <img
-              src="/morLogo.png"
+              src="/yeniLogo.png"
               alt="Welcome aboard!"
-              className="w-25 h-25 md:w-30 md:h-30 object-contain mr-2"
+              className="w-25 h-25 md:w-30 md:h-30 object-contain "
               draggable={false}
             />
             Welcome A
-            <span className="inline-block bg-white border-2 border-indigo-400 rounded-xl px-1 py-1 shadow font-black text-indigo-600">
+            <span className="inline-block bg-white border-2 border-indigo-400 rounded-xl px-1 py-1 shadow font-black text-indigo-500">
               Board
             </span>
             !
@@ -52,7 +52,7 @@ export default function HomePage() {
           <div className="flex justify-center">
             <button
               onClick={() => setIsLoginOpen(true)}
-              className="flex items-center gap-2 px-8 py-3 rounded-lg bg-indigo-600 text-white font-semibold shadow-md hover:bg-indigo-700 transition text-lg"
+              className="flex items-center gap-2 px-8 py-3 rounded-lg bg-indigo-500 text-white font-semibold shadow-md hover:bg-indigo-700 transition text-lg"
             >
               Get Started <FiArrowRight className="ml-1" />
             </button>
