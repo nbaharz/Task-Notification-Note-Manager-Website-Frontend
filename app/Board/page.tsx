@@ -69,6 +69,7 @@ export default function NoteBoard() {
           onViewNote={handleViewNote}
           onDeleteNote={deleteNote}
           onShowAllNotes={() => setShowAllNotesModal(true)}
+          onTogglePin={togglePin} // <-- Bunu ekle!
         />
         <Modals
           showViewModal={showViewModal}

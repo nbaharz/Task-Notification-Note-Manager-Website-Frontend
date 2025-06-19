@@ -12,6 +12,7 @@ interface Props {
   onViewNote: (note: Note) => void;
   onDeleteNote: (title: string) => void;
   onShowAllNotes: () => void;
+  onTogglePin: (title: string) => void; // <-- BURAYI EKLE
 }
 
 export default function BoardContent({
@@ -21,6 +22,7 @@ export default function BoardContent({
   onViewNote,
   onDeleteNote,
   onShowAllNotes,
+  onTogglePin
 }: Props) {
   return (
     <div className="px-4 sm:px-6 lg:px-8 py-6"> {/* Eşit yan boşluklar */}
@@ -33,6 +35,7 @@ export default function BoardContent({
             onViewNote={onViewNote}
             onDeleteNote={onDeleteNote}
             onShowAllNotes={onShowAllNotes}
+            onTogglePin={onTogglePin} // <-- Burada fonksiyon olmalı!
           />
         </div>
         

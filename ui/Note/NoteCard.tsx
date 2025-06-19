@@ -11,6 +11,7 @@ interface NoteCardProps {
   isNew?: boolean;
   onTitleSubmit?: (title: string) => void;
   color?: string;
+  onTogglePin?: () => void;
 }
 
 const NoteCard = memo(({ 
@@ -20,7 +21,8 @@ const NoteCard = memo(({
   pinned, 
   isNew = false, 
   onTitleSubmit,
-  color = 'bg-white/70'
+  color = 'bg-white/70',
+  onTogglePin
 }: NoteCardProps) => {
   const [inputValue, setInputValue] = useState(title ?? '');
 
@@ -38,6 +40,11 @@ const NoteCard = memo(({
     e.stopPropagation();
     onDelete?.();
   }, [onDelete]);
+
+  const handleTogglePin = useCallback((e: React.MouseEvent) => {
+    e.stopPropagation();
+    onTogglePin?.();
+  }, [onTogglePin]);
 
   return (
     <motion.div
@@ -81,11 +88,13 @@ const NoteCard = memo(({
             <FiTrash2 size={16} />
           </button>
         )}
-        {pinned && (
-          <span className="text-yellow-400 bg-yellow-50/80 rounded-full p-1" title="Sabit">
-            <FiStar size={16} />
-          </span>
-        )}
+        <button
+          onClick={handleTogglePin}
+          className={`p-1 rounded-full transition-colors ${pinned ? 'text-yellow-400 bg-yellow-50/80' : 'text-gray-400 hover:text-yellow-400 hover:bg-yellow-50/80'}`}
+          title={pinned ? "Pin'i kaldır" : "Pinle"}
+        >
+          <FiStar size={16} />
+        </button>
       </div>
       {/* Content */}
       <div 

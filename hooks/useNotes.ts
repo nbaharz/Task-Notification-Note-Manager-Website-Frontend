@@ -7,8 +7,6 @@ const STORAGE_KEY = 'notes';
 
 export function useNotes() {
   const [notes, setNotes] = useState<Note[]>([]);
-  // 'newNote' state'i kullanılmıyor, bu yüzden kaldırıldı.
-  // const [newNote, setNewNote] = useState<Omit<Note, 'pinned'>>({ title: '', content: '' });
   const [selectedNote, setSelectedNote] = useState<Note | null>(null);
   const [isLoading, setIsLoading] = useState(true); 
   const [error, setError] = useState<string | null>(null);
@@ -63,7 +61,7 @@ export function useNotes() {
     const newNote: Note = {
       title: trimmedTitle,
       content: '', 
-      pinned: true, 
+      pinned: false, // <-- HER ZAMAN PİNSİZ EKLE
     };
 
     setNotes(prev => [newNote, ...prev].sort((a, b) => {

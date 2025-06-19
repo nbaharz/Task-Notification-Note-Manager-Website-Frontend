@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef, useCallback, memo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { FiPlus } from 'react-icons/fi';
+import { FiPlus, FiStar } from 'react-icons/fi';
 import NoteCard from '@/ui/Note/NoteCard';
 import NoteCardSkeleton from '@/ui/Note/NoteCardSkeleton';
 import { Note } from '../../types/types';
@@ -13,6 +13,7 @@ interface NoteGridProps {
   onViewNote: (note: Note) => void;
   onDeleteNote: (title: string) => void;
   onShowAllNotes: () => void;
+  onTogglePin: (title: string) => void;
 }
 
 const NoteGrid = memo(({
@@ -21,10 +22,11 @@ const NoteGrid = memo(({
   onViewNote,
   onDeleteNote,
   onShowAllNotes,
+  onTogglePin,
 }: NoteGridProps) => {
   const [isLoading, setIsLoading] = useState(true);
   const [isAddingNote, setIsAddingNote] = useState(false);
-  const [showAllPinned, setShowAllPinned] = useState(false);
+  const [showPinnedOnly, setShowPinnedOnly] = useState(false);
   const [showAddButton, setShowAddButton] = useState(false);
   const addNoteRef = useRef<HTMLDivElement>(null);
 
@@ -34,13 +36,13 @@ const NoteGrid = memo(({
   }, []);
 
   const handleClickOutside = useCallback((e: MouseEvent) => {
-      if (
-        isAddingNote &&
-        addNoteRef.current &&
-        !addNoteRef.current.contains(e.target as Node)
-      ) {
-        setIsAddingNote(false);
-      }
+    if (
+      isAddingNote &&
+      addNoteRef.current &&
+      !addNoteRef.current.contains(e.target as Node)
+    ) {
+      setIsAddingNote(false);
+    }
   }, [isAddingNote]);
 
   useEffect(() => {
@@ -53,33 +55,49 @@ const NoteGrid = memo(({
       setShowAddButton(true);
     }, 300);
     return () => clearTimeout(timer);
-  }, [showAllPinned]);
+  }, []);
 
   const handleAddNote = useCallback((title: string) => {
     onAddNote(title);
     setIsAddingNote(false);
   }, [onAddNote]);
 
-  const handleToggleShowAll = useCallback(() => {
-    setShowAllPinned((prev) => !prev);
-    setShowAddButton(false);
-    setTimeout(() => setShowAddButton(true), 500);
-  }, []);
-
+  // Filtreleme
   const pinnedNotes = notes.filter((n) => n.pinned);
   const displayNotes = isLoading
     ? Array(6).fill(null)
-    : showAllPinned
-    ? pinnedNotes
-    : pinnedNotes.slice(0, 5);
+    : showPinnedOnly
+      ? pinnedNotes
+      : notes;
 
   return (
     <div className="w-full lg:w-auto space-y-6 ml-4 sm:ml-4">
-      {/* {!isLoading && (
-        <h2 className="text-lg sm:text-xl font-semibold text-gray-800">
-          Quick Notes
-        </h2>
-      )} */}
+      {/* Tablar */}
+      <div className="flex items-center gap-2 mb-6">
+        <button
+          className={`flex items-center gap-2 px-5 py-2 rounded-t-lg border-b-2 transition-all
+            ${showPinnedOnly
+              ? 'bg-indigo-50 border-indigo-500 text-indigo-700 shadow'
+              : 'bg-white border-transparent text-gray-400 hover:text-indigo-600'}
+          `}
+          onClick={() => setShowPinnedOnly(true)}
+        >
+          <FiStar className="text-yellow-400" />
+          <span className="font-semibold">Show Pinned</span>
+          <span className="ml-1 text-xs bg-yellow-100 text-yellow-700 px-2 py-0.5 rounded-full">{pinnedNotes.length}</span>
+        </button>
+        <button
+          className={`flex items-center gap-2 px-5 py-2 rounded-t-lg border-b-2 transition-all
+            ${!showPinnedOnly
+              ? 'bg-indigo-50 border-indigo-500 text-indigo-700 shadow'
+              : 'bg-white border-transparent text-gray-400 hover:text-indigo-600'}
+          `}
+          onClick={() => setShowPinnedOnly(false)}
+        >
+          <span className="font-semibold">Show All</span>
+          <span className="ml-1 text-xs bg-indigo-100 text-indigo-700 px-2 py-0.5 rounded-full">{notes.length}</span>
+        </button>
+      </div>
 
       <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-2 xl:grid-cols-2 gap-6 sm:gap-4 xl:gap-6">
         {displayNotes.map((note, index) =>
@@ -99,6 +117,7 @@ const NoteGrid = memo(({
                 onClick={() => onViewNote(note)}
                 onDelete={() => onDeleteNote(note.title)}
                 color={note.color}
+                onTogglePin={() => onTogglePin(note.title)}
               />
             </motion.div>
           )
@@ -147,17 +166,6 @@ const NoteGrid = memo(({
           </motion.div>
         )}
       </div>
-
-      {!isLoading && pinnedNotes.length > 5 && (
-        <div className="text-center">
-          <button
-            onClick={handleToggleShowAll}
-            className="text-indigo-600 text-sm hover:text-indigo-800 mt-2"
-          >
-            {showAllPinned ? 'Show Less' : 'See All'}
-          </button>
-        </div>
-      )}
     </div>
   );
 });
