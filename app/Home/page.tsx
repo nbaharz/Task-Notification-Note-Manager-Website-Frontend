@@ -42,7 +42,7 @@ export default function HomePage() {
             />
             Welcome A
             <span className="inline-block bg-white border-2 border-indigo-400 rounded-xl px-1 py-1 shadow font-black text-indigo-500">
-              Board
+              BOARD
             </span>
             !
           </h1>

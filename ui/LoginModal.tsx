@@ -3,9 +3,11 @@ import React, { useState } from 'react';
 import { login } from '@/app/api/UserApi/Login';
 import { FiMail, FiLock, FiLogIn, FiX, FiUserPlus } from 'react-icons/fi';
 import { useModal } from '@/app/context/ModalContext';
+import { useUser } from '@/app/context/UserContext';
 
 export default function LoginModal({ onSuccess, onSignUpClick }: { onSuccess?: (user: any) => void; onSignUpClick?: () => void }) {
   const { modalType, closeModal } = useModal();
+  const { setUser, setToken } = useUser();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
@@ -13,12 +15,25 @@ export default function LoginModal({ onSuccess, onSignUpClick }: { onSuccess?: (
 
   if (modalType !== 'login') return null;
 
+  // Cookie yazmak için yardımcı fonksiyonu tekrar tanımla
+  function setCookie(name: string, value: string, days: number) {
+    const expires = new Date(Date.now() + days * 864e5).toUTCString();
+    document.cookie = name + '=' + encodeURIComponent(value) + '; expires=' + expires + '; path=/';
+  }
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
     setError('');
     try {
       const data = await login({ email, password });
+      if (data.token) {
+        setCookie('token', data.token, 7); // 7 gün geçerli
+        setToken(data.token);
+      }
+      if (data.user) {
+        setUser(data.user);
+      }
       onSuccess?.(data);
       closeModal();
     } catch (err: any) {

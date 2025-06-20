@@ -7,12 +7,14 @@ export interface Note {
 }
 
 export interface Task {
-  id: number;
-  text: string;
+  id?: string;
+  title: string;
   completed: boolean;
   description?: string;
-  priority?: 'high' | 'medium' | 'low';
+  priority?: string;
   date: string;
+  userId?: string;
+  referenceType?: string;
 }
 
 export type Priority = 'high' | 'medium' | 'low';

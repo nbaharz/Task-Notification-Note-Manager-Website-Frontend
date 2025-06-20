@@ -13,7 +13,7 @@ import EventReminderModal from '@/ui/Calendar/EventReminderModal';
 export default function NoteBoard() {
   const [activeTab, setActiveTab] = useState('notes');
   const [showViewModal, setShowViewModal] = useState(false);
-  const [showAllNotesModal, setShowAllNotesModal] = useState(false);
+
   const [showEventReminderModal, setShowEventReminderModal] = useState(false);
   const [eventReminders, setEventReminders] = useState<any[]>([]);
 

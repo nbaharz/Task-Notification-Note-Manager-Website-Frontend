@@ -6,6 +6,7 @@ export const login = async (body: {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(body), // direkt body kullanılıyor
+    credentials: 'include' 
   });
 
   if (!res.ok) {

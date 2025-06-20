@@ -33,14 +33,14 @@ export function TaskList() {
     setIsMounted(true);
   }, [tasks]);
 
-  const handleToggleComplete = (id: number) => {
-    const task = tasks.find(t => t.id === id);
+  const handleToggleComplete = (id: string) => {
+    const task = tasks.find(t => t.title === id);
     if (task) {
       updateTask({ ...task, completed: !task.completed });
     }
   };
 
-  const handleDelete = (id: number) => {
+  const handleDelete = (id: string) => {
     removeTask(id);
   };
 
@@ -95,7 +95,7 @@ export function TaskList() {
         modifiers={[restrictToVerticalAxis, restrictToParentElement]}
       >
         <SortableContext
-          items={orderedTasks.map(task => task.id)}
+          items={orderedTasks.map(task => task.title)}
           strategy={verticalListSortingStrategy}
         >
           <motion.ul 
@@ -109,7 +109,7 @@ export function TaskList() {
             <AnimatePresence mode="popLayout">
               {orderedTasks.map(task => (
                 <TaskItem
-                  key={task.id}
+                  key={task.id || task.title}
                   task={task}
                   onToggleComplete={handleToggleComplete}
                   onDelete={handleDelete}

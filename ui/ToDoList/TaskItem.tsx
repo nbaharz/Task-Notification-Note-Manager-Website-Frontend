@@ -7,8 +7,8 @@ import { Task } from '@/types/types';
 
 interface TaskItemProps {
   task: Task;
-  onToggleComplete: (id: number) => void;
-  onDelete: (id: number) => void;
+  onToggleComplete: (id: string) => void;
+  onDelete: (id: string) => void;
   onOpenModal: (task: Task) => void;
 }
 
@@ -38,7 +38,7 @@ export function TaskItem({ task, onToggleComplete, onDelete, onOpenModal }: Task
     transform,
     transition,
     isDragging,
-  } = useSortable({ id: task.id });
+  } = useSortable({ id: task.id || '' });
 
   const style = {
     transform: CSS.Transform.toString(transform),
@@ -58,7 +58,7 @@ export function TaskItem({ task, onToggleComplete, onDelete, onOpenModal }: Task
       <div className={`absolute top-0 left-0 w-full h-1 ${getPriorityColor(task.priority)}`} />
       <div className="flex items-center p-3">
         <button
-          onClick={() => onToggleComplete(task.id)}
+          onClick={() => onToggleComplete(task.title)}
           className={`w-5 h-5 flex-shrink-0 flex items-center justify-center rounded-full border mr-3 transition-colors ${
             task.completed ? 'bg-indigo-500 border-indigo-500' : 'border-gray-300 hover:border-indigo-300'
           }`}
@@ -74,7 +74,7 @@ export function TaskItem({ task, onToggleComplete, onDelete, onOpenModal }: Task
           <span className={`block break-words whitespace-pre-wrap text-left w-full min-w-0 text-sm ${
             task.completed ? 'line-through text-gray-400' : 'text-gray-700'
           }`}>
-            {task.text}
+            {task.title}
           </span>
           <div className="flex items-center gap-2 mt-1">
             {task.description && (
@@ -100,7 +100,7 @@ export function TaskItem({ task, onToggleComplete, onDelete, onOpenModal }: Task
           <button
             onClick={(e) => {
               e.stopPropagation();
-              onDelete(task.id);
+              onDelete(task.title);
             }}
             className="text-gray-400 hover:text-red-500 flex-shrink-0 p-1.5 transition-colors"
             aria-label="Delete task"

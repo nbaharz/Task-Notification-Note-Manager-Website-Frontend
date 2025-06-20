@@ -104,7 +104,8 @@ const NoteGrid = () => {
         </button>
       </div>
 
-      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-2 xl:grid-cols-2 gap-6 sm:gap-4 xl:gap-6">
+      <div className="grid gap-6 sm:gap-4 xl:gap-6 grid-cols-2 sm:grid-cols-[repeat(auto-fit,minmax(150px,1fr))]"
+        >
         {displayNotes.map((note, index) =>
           note === null ? (
             <NoteCardSkeleton key={`skeleton-${index}`} />
