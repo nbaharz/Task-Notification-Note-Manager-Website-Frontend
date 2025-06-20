@@ -17,7 +17,7 @@ export default function EventList() {
         )}
         {events.map((event, idx) => (
           <li
-            key={event.id}
+            key={event.id || idx}
             className="flex items-center justify-between bg-white border border-pink-100 rounded-lg px-4 py-3 shadow-sm hover:shadow-md transition"
           >
             <div>

@@ -3,12 +3,14 @@
 import { useState } from 'react';
 import { useEvent } from '@/app/context/EventContext';
 import { FiCalendar, FiPlus } from 'react-icons/fi';
+import EventCreateModal from './EventCreateModal';
 
 export default function EventInput() {
   const { addEvent } = useEvent();
   const [title, setTitle] = useState('');
   const [date, setDate] = useState('');
   const [description, setDescription] = useState('');
+  const [modalOpen, setModalOpen] = useState(false);
 
   const handleAddEvent = (e: React.FormEvent) => {
     e.preventDefault();
@@ -27,7 +29,7 @@ export default function EventInput() {
   };
 
   return (
-    <form className="flex flex-col gap-2 mb-6 w-full max-w-none" onSubmit={handleAddEvent}>
+    <div className="w-full">
       <div className="flex flex-col sm:flex-row gap-2 w-full max-w-none">
         <div className="flex-1 relative w-full max-w-none">
           <input
@@ -36,6 +38,7 @@ export default function EventInput() {
             value={title}
             onChange={e => setTitle(e.target.value)}
             maxLength={40}
+            disabled
           />
           <FiCalendar className="absolute right-3 top-3 text-pink-300" />
         </div>
@@ -44,6 +47,7 @@ export default function EventInput() {
           className="w-full max-w-none border-2 border-pink-200 rounded-lg px-4 py-2 focus:outline-none focus:border-pink-400 transition"
           value={date}
           onChange={e => setDate(e.target.value)}
+          disabled
         />
         <input
           type="text"
@@ -51,14 +55,17 @@ export default function EventInput() {
           placeholder="Description"
           value={description}
           onChange={e => setDescription(e.target.value)}
+          disabled
         />
         <button
-          type="submit"
+          type="button"
           className="flex items-center gap-2 bg-pink-500 text-white px-4 py-2 rounded-lg font-semibold shadow hover:bg-pink-600 transition min-w-[80px] w-full sm:w-auto"
+          onClick={() => setModalOpen(true)}
         >
           <FiPlus /> Add
         </button>
       </div>
-    </form>
+      <EventCreateModal open={modalOpen} onClose={() => setModalOpen(false)} />
+    </div>
   );
 }
