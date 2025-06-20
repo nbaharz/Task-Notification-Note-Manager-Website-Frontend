@@ -53,14 +53,8 @@ export const ToDoProvider = ({ children }: { children: ReactNode }) => {
     fetchTasks();
   }, [token]);
 
-  const addTask = async (task: Task) => {
-    if (!token) return;
-    try {
-      const created = await createTask(task, token);
-      setTasks((prev) => [...prev, created]);
-    } catch (e) {
-      // Hata yönetimi eklenebilir
-    }
+  const addTask = (task: Task) => {
+    setTasks((prev) => [...prev, task]);
   };
   const removeTask = (id: string) => setTasks((prev) => prev.filter((t) => t.id !== id));
   const updateTask = (updatedTask: Task) =>

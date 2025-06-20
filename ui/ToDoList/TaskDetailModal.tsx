@@ -23,22 +23,36 @@ const getPriorityColor = (priority?: string) => {
 };
 
 export default function TaskDetailModal() {
-  const { selectedTask, setSelectedTask, addTask, updateTask } = useToDo();
+  const { selectedTask, setSelectedTask, addTask, updateTask, tasks } = useToDo();
   const { closeModal } = useModal();
   const { token } = useUser();
+  const [error, setError] = useState('');
   const toDo = selectedTask;
   if (!toDo) return null;
 
   const handleTaskChange = (updated: Partial<Task>) => {
     setSelectedTask({ ...toDo, ...updated });
+    setError('');
   };
 
   const handleSaveAndClose = async () => {
     if (!toDo.title.trim()) return;
     if (!toDo.id) {
       if (!token) return;
-      const created = await createTask(toDo, token);
-      addTask({ ...created });
+      // Duplicate title check
+      const duplicate = tasks.some(
+        t => t.title.trim().toLowerCase() === toDo.title.trim().toLowerCase()
+      );
+      if (duplicate) {
+        setError('Aynı başlığa sahip bir görev zaten var.');
+        return;
+      }
+      try {
+        const created = await createTask(toDo, token);
+        addTask(created);
+      } catch (e) {
+        setError('Görev oluşturulamadı.');
+      }
     } else {
       updateTask(toDo);
     }
@@ -69,6 +83,7 @@ export default function TaskDetailModal() {
               className="w-full p-3 border border-gray-200 rounded-lg bg-white/60 backdrop-blur focus:outline-none focus:ring-2 focus:ring-indigo-300 focus:border-indigo-400 transition shadow-sm placeholder-gray-400"
               placeholder="Task"
             />
+            {error && <div className="text-red-500 text-xs mt-1">{error}</div>}
           </div>
           <div className="mt-4">
             <label className="block text-xs font-semibold text-gray-600 mb-2 tracking-wide uppercase">

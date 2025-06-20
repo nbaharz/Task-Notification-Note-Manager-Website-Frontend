@@ -35,7 +35,7 @@ export function TaskInput() {
     };
     try {
       const created = await createTask(newTask, token);
-      addTask({ ...created }); // backend'den dönen task'ı ekle
+      addTask(created); // backend'den dönen task'ı ekle
       setValue('');
     } catch (e: any) {
       setError(e.message || 'Görev eklenemedi');
@@ -46,13 +46,9 @@ export function TaskInput() {
 
   const handlePlusClick = () => {
     if (!token) return;
-    if (tasks.some(task => task.title.trim().toLowerCase() === value.trim().toLowerCase())) {
-      setError('Aynı başlığa sahip bir görev zaten var.');
-      return;
-    }
     const newTask: Task = {
-      id: Date.now().toString(), // benzersiz id
-      title: value.trim(),
+      id: '',
+      title: '',
       completed: false,
       date: new Date().toISOString().split('T')[0],
       description: '',

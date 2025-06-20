@@ -20,10 +20,13 @@ import { useModal } from '@/app/context/ModalContext';
 import { TaskItem } from './TaskItem';
 import TaskSkeleton from './ToDoListSkeleton';
 import { useState, useEffect } from 'react';
+import { deleteTask as deleteTaskApi } from '@/app/api/TaskApi/DeleteTask';
+import { useUser } from '@/app/context/UserContext';
 
 export function TaskList() {
   const { tasks, updateTask, removeTask, setSelectedTask } = useToDo();
   const { openModal } = useModal();
+  const { token } = useUser();
   const [isLoading, setIsLoading] = useState(false);
   const [orderedTasks, setOrderedTasks] = useState(tasks);
   const [isMounted, setIsMounted] = useState(false);
@@ -40,8 +43,15 @@ export function TaskList() {
     }
   };
 
-  const handleDelete = (id: string) => {
-    removeTask(id);
+  const handleDelete = async (id: string) => {
+    if (!token) return;
+    try {
+      await deleteTaskApi(tasks.find(t => t.id === id) || {}, token);
+      removeTask(task);
+    } catch (e) {
+      alert('Görev silinemedi.');
+      console.error(e);
+    }
   };
 
   const handleOpenModal = (task: any) => {
@@ -109,7 +119,7 @@ export function TaskList() {
             <AnimatePresence mode="popLayout">
               {orderedTasks.map(task => (
                 <TaskItem
-                  key={task.id || task.title}
+                  key={task.id}
                   task={task}
                   onToggleComplete={handleToggleComplete}
                   onDelete={handleDelete}

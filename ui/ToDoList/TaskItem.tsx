@@ -4,6 +4,8 @@ import { motion } from 'framer-motion';
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import { Task } from '@/types/types';
+import { deleteTask as deleteTaskApi } from '@/app/api/TaskApi/DeleteTask';
+import { useUser } from '@/app/context/UserContext';
 
 interface TaskItemProps {
   task: Task;
@@ -100,7 +102,7 @@ export function TaskItem({ task, onToggleComplete, onDelete, onOpenModal }: Task
           <button
             onClick={(e) => {
               e.stopPropagation();
-              onDelete(task.title);
+              onDelete(task.id || '');
             }}
             className="text-gray-400 hover:text-red-500 flex-shrink-0 p-1.5 transition-colors"
             aria-label="Delete task"

@@ -1,4 +1,4 @@
-import { useState, useRef, useCallback, useEffect } from 'react';
+import { useState, useRef, useCallback } from 'react';
 import { arrayMove } from '@dnd-kit/sortable';
 import type { DragEndEvent } from '@dnd-kit/core';
 
@@ -15,7 +15,6 @@ export function useToDo() {
   const [tasks, setTasks] = useState<Record<string, Task[]>>({});
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [modalTask, setModalTask] = useState<Task | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
   const [showTasks, setShowTasks] = useState(true);
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -35,28 +34,6 @@ export function useToDo() {
       return newDate;
     });
   }, []);
-
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      const stored = localStorage.getItem('tasks');
-      if (stored) {
-        try {
-          setTasks(JSON.parse(stored));
-        } catch (error) {
-          console.error('Failed to parse tasks', error);
-        }
-      }
-      setIsLoading(false);
-    }, 300);
-
-    return () => clearTimeout(timer);
-  }, []);
-
-  useEffect(() => {
-    if (!isLoading) {
-      localStorage.setItem('tasks', JSON.stringify(tasks));
-    }
-  }, [tasks, isLoading]);
 
   const addTask = useCallback((text: string) => {
     if (!text.trim()) return;
@@ -129,8 +106,6 @@ export function useToDo() {
     setSelectedDate,
     modalTask,
     setModalTask,
-    isLoading,
-    setIsLoading,
     showTasks,
     setShowTasks,
     inputRef,
