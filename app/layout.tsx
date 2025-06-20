@@ -6,6 +6,7 @@ import { BoardProvider } from './context/BoardContext'
 import { NoteProvider } from './context/NoteContext'
 import { ToDoProvider } from './context/ToDoContext'
 import { ModalProvider } from './context/ModalContext'
+import { EventProvider } from './context/EventContext'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -35,13 +36,15 @@ export default function RootLayout({
           <UserProvider>
             <BoardProvider>
               <NoteProvider>
-                <ToDoProvider>
-                  <ModalProvider>
-                    <ThemeWrapper>
-                      {children}
-                    </ThemeWrapper>
-                  </ModalProvider>
-                </ToDoProvider>
+                <EventProvider>
+                  <ToDoProvider>
+                    <ModalProvider>
+                      <ThemeWrapper>
+                        {children}
+                      </ThemeWrapper>
+                    </ModalProvider>
+                  </ToDoProvider>
+                </EventProvider>
               </NoteProvider>
             </BoardProvider>
           </UserProvider>

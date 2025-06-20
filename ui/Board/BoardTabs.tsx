@@ -5,7 +5,7 @@ type Props = {
 };
 
 export default function BoardTabs({ activeTab, setActiveTab }: Props) {
-  const tabs = ['notes', 'external', 'tasks', 'calendar'];
+  const tabs = ['notes', 'external', 'tasks', 'calendar', 'events'];
 
   return (
     <div className="md:hidden mb-4">

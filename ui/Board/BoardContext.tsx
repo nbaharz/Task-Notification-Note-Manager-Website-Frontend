@@ -7,6 +7,7 @@ import CalendarPanel from '@/ui/Calendar/CalendarPanel';
 import TrackedProductsModal from '@/ui/ExternalServices/TrackedProducts/TrackedProductsModal';
 import ModalWrapper from '@/ui/ModalWrapper';
 import {TrackedProduct } from '@/types/types';
+import EventBoardSection from '@/ui/Board/EventBoardSection'; // Import EventBoardSection
 
 
 interface Props {
@@ -64,10 +65,13 @@ export default function BoardContent({
             />
           </div>
         </div>
-        {/* ToDo List */}
+        {/* ToDo List + Events (alt alta) */}
         <div className={`${activeTab === 'tasks' ? 'block' : 'hidden'} md:block`}>
-          <div className="h-full">
+          <div className="h-full flex flex-col gap-6">
             <ToDoList />
+            <div>
+              <EventBoardSection />
+            </div>
           </div>
         </div>
         {/* Calendar */}

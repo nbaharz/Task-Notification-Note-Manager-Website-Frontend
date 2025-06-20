@@ -13,6 +13,7 @@ interface ToDoContextType {
   addTask: (task: Task) => void;
   removeTask: (id: string) => void;
   updateTask: (task: Task) => void;
+  refreshTasks: () => Promise<void>;
 }
 
 const ToDoContext = createContext<ToDoContextType | undefined>(undefined);
@@ -60,9 +61,31 @@ export const ToDoProvider = ({ children }: { children: ReactNode }) => {
   const updateTask = (updatedTask: Task) =>
     setTasks((prev) => prev.map((t) => (t.id === updatedTask.id ? updatedTask : t)));
 
+  const refreshTasks = async () => {
+    if (!token) return;
+    try {
+      const data = await getUserTasks(token);
+      const mapped = Array.isArray(data)
+        ? data.map((t: any) => ({
+            id: t.id,
+            title: t.title,
+            completed: t.isCompleted,
+            description: t.description || '',
+            priority: t.priority,
+            date: t.createdAt,
+            userId: t.userId,
+            referenceType: t.referenceType,
+          }))
+        : [];
+      setTasks(mapped);
+    } catch (e) {
+      // Hata yönetimi eklenebilir
+    }
+  };
+
   return (
-    <ToDoContext.Provider value={{ tasks, selectedTask, setSelectedTask, addTask, removeTask, updateTask }}>
+    <ToDoContext.Provider value={{ tasks, selectedTask, setSelectedTask, addTask, removeTask, updateTask, refreshTasks }}>
       {children}
     </ToDoContext.Provider>
   );
-}; 
+};

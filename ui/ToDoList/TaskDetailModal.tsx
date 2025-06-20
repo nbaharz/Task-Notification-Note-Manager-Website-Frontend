@@ -23,7 +23,7 @@ const getPriorityColor = (priority?: string) => {
 };
 
 export default function TaskDetailModal() {
-  const { selectedTask, setSelectedTask, addTask, updateTask, tasks } = useToDo();
+  const { selectedTask, setSelectedTask, addTask, updateTask, tasks, refreshTasks } = useToDo();
   const { closeModal } = useModal();
   const { token } = useUser();
   const [error, setError] = useState('');
@@ -41,7 +41,7 @@ export default function TaskDetailModal() {
       if (!token) return;
       // Duplicate title check
       const duplicate = tasks.some(
-        t => t.title.trim().toLowerCase() === toDo.title.trim().toLowerCase()
+        t => t.title && toDo.title && t.title.trim().toLowerCase() === toDo.title.trim().toLowerCase()
       );
       if (duplicate) {
         setError('Aynı başlığa sahip bir görev zaten var.');
@@ -50,11 +50,13 @@ export default function TaskDetailModal() {
       try {
         const created = await createTask(toDo, token);
         addTask(created);
+        await refreshTasks(); // Task ekledikten sonra backend'den güncel listeyi çek
       } catch (e) {
         setError('Görev oluşturulamadı.');
       }
     } else {
       updateTask(toDo);
+      await refreshTasks(); // Task güncellendikten sonra da güncel listeyi çek
     }
     setSelectedTask(null);
     closeModal();

@@ -45,9 +45,11 @@ export function TaskList() {
 
   const handleDelete = async (id: string) => {
     if (!token) return;
+    const task = tasks.find(t => t.id === id);
+    if (!task) return;
     try {
-      await deleteTaskApi(tasks.find(t => t.id === id) || {}, token);
-      removeTask(task);
+      await deleteTaskApi(id, token);
+      if (task.id) removeTask(task.id);
     } catch (e) {
       alert('Görev silinemedi.');
       console.error(e);
@@ -105,7 +107,7 @@ export function TaskList() {
         modifiers={[restrictToVerticalAxis, restrictToParentElement]}
       >
         <SortableContext
-          items={orderedTasks.map(task => task.title)}
+          items={orderedTasks.filter(task => !!task.id).map(task => task.id as string)}
           strategy={verticalListSortingStrategy}
         >
           <motion.ul 
@@ -117,12 +119,12 @@ export function TaskList() {
             }}
           >
             <AnimatePresence mode="popLayout">
-              {orderedTasks.map(task => (
+              {orderedTasks.filter(task => !!task.id).map((task, idx) => (
                 <TaskItem
                   key={task.id}
                   task={task}
-                  onToggleComplete={handleToggleComplete}
-                  onDelete={handleDelete}
+                  onToggleComplete={() => handleToggleComplete(task.id!)}
+                  onDelete={() => handleDelete(task.id!)}
                   onOpenModal={handleOpenModal}
                 />
               ))}

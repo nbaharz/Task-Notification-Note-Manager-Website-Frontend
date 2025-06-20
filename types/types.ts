@@ -30,5 +30,14 @@ export type TrackedProduct = {
   notifyOnDiscount: boolean;
 };
 
+export interface Event {
+  id: string;
+  userId: string;
+  title: string;
+  description: string;
+  eventDate: string; // ISO string olarak tutulur (DateTime -> string)
+  referenceType: string; // veya enum olarak ReferenceType.Event
+}
+
 
 
