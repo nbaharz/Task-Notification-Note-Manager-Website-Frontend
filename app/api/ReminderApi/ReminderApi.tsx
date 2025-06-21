@@ -1,11 +1,8 @@
 // Reminder API endpoints
-
 // Reminder oluştur
 export const setReminder = async (reminderData: {
-  title: string;
-  description?: string;
-  date: string;
-  time: string;
+  message: string;
+  date: string; // ISO string format
   referenceType?: string;
   referenceId?: string;
 }, token: string) => {

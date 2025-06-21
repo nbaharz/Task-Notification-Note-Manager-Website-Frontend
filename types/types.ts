@@ -42,5 +42,15 @@ export interface Event {
 }
 
 
+export interface Reminder {
+  id: string;
+  userId: string;
+  message: string;
+  date: string; // ISO string format
+  referenceType?: string;
+  referenceId?: string;
+  isReminded: boolean;
+  createdAt: string;
+}
 
 

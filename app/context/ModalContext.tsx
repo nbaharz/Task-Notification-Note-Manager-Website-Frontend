@@ -2,7 +2,7 @@
 
 import React, { createContext, useContext, useState, ReactNode } from "react";
 
-type ModalType = "login" | "signup" | "viewNote" | "addNote" | "taskDetail" | "allNotes" | null;
+type ModalType = "login" | "signup" | "viewNote" | "addNote" | "taskDetail" | "allNotes" | "taskReminder" | null;
 
 interface ModalContextType {
   openModal: (type: ModalType) => void;

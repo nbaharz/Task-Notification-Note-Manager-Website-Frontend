@@ -1,68 +1,64 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { FiX, FiCalendar, FiClock, FiTrash2 } from 'react-icons/fi';
+import { FiX, FiCheckSquare, FiClock, FiTrash2, FiCalendar } from 'react-icons/fi';
 import ModalWrapper from '../ModalWrapper';
-import { getUserEvents, deleteEvent } from '@/app/api/EventApi/EventApi';
+import { getUserTasks } from '@/app/api/TaskApi/TaskApi';
 import { setReminder } from '@/app/api/ReminderApi/ReminderApi';
-import { Event } from '@/types/types';
+import { Task } from '@/types/types';
 import { useUser } from '@/app/context/UserContext';
 
-interface EventReminderModalProps {
+interface TaskReminderModalProps {
   open: boolean;
   onClose: () => void;
   onSave?: () => void;
 }
 
-export default function EventReminderModal({ open, onClose, onSave }: EventReminderModalProps) {
-  const [selectedEvent, setSelectedEvent] = useState<Event | null>(null);
+export default function TaskReminderModal({ open, onClose, onSave }: TaskReminderModalProps) {
+  const [selectedTask, setSelectedTask] = useState<Task | null>(null);
   const [reminderDate, setReminderDate] = useState('');
   const [reminderTime, setReminderTime] = useState('');
   const [reminderMessage, setReminderMessage] = useState('');
-  const [userEvents, setUserEvents] = useState<Event[]>([]);
+  const [userTasks, setUserTasks] = useState<Task[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { token } = useUser();
 
-  // Fetch user events when modal opens
+  // Fetch user tasks when modal opens
   useEffect(() => {
     if (open && token) {
-      fetchUserEvents();
+      fetchUserTasks();
     }
   }, [open, token]);
 
-  const fetchUserEvents = async () => {
+  const fetchUserTasks = async () => {
     if (!token) return;
     
     try {
       setIsLoading(true);
-      const events = await getUserEvents(token);
-      setUserEvents(Array.isArray(events) ? events : []);
+      const tasks = await getUserTasks(token);
+      const mapped = Array.isArray(tasks)
+        ? tasks.map((t: any) => ({
+            id: t.id,
+            title: t.title,
+            completed: t.isCompleted,
+            description: t.description || '',
+            priority: t.priority,
+            date: t.createdAt,
+            userId: t.userId,
+            referenceType: t.referenceType,
+          }))
+        : [];
+      setUserTasks(mapped);
     } catch (error) {
-      console.error('Error fetching user events:', error);
-      setUserEvents([]);
+      console.error('Error fetching user tasks:', error);
+      setUserTasks([]);
     } finally {
       setIsLoading(false);
     }
   };
 
-  const handleDeleteEvent = async (eventId: string) => {
-    if (!token) return;
-    
-    try {
-      await deleteEvent(eventId, token);
-      // Refresh the events list
-      await fetchUserEvents();
-      // Clear selection if deleted event was selected
-      if (selectedEvent?.id === eventId) {
-        setSelectedEvent(null);
-      }
-    } catch (error) {
-      console.error('Error deleting event:', error);
-    }
-  };
-
-  const formatEventDate = (dateString: string) => {
+  const formatTaskDate = (dateString: string) => {
     const date = new Date(dateString);
     return date.toLocaleDateString('en-US', {
       weekday: 'short',
@@ -72,9 +68,19 @@ export default function EventReminderModal({ open, onClose, onSave }: EventRemin
     });
   };
 
+  const getPriorityColor = (priority?: string) => {
+    const colors = {
+      high: 'bg-rose-100 text-rose-700 border-rose-200',
+      medium: 'bg-cyan-100 text-cyan-700 border-cyan-200',
+      low: 'bg-emerald-100 text-emerald-700 border-emerald-200',
+      default: 'bg-gray-100 text-gray-700 border-gray-200',
+    };
+    return priority ? colors[priority as keyof typeof colors] : colors.default;
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!selectedEvent || !reminderDate || !reminderTime) return;
+    if (!selectedTask || !reminderDate || !reminderTime) return;
 
     try {
       setIsSubmitting(true);
@@ -84,16 +90,16 @@ export default function EventReminderModal({ open, onClose, onSave }: EventRemin
       
       // Create reminder data
       const reminderData = {
-        message: reminderMessage || selectedEvent.description,
+        message: reminderMessage || selectedTask.description || selectedTask.title || 'Task Reminder',
         date: combinedDateTime,
-        referenceType: 'Event',
-        referenceId: selectedEvent.id
+        referenceType: 'Task',
+        referenceId: selectedTask.id
       };
 
       await setReminder(reminderData, token!);
       
       // Reset form
-      setSelectedEvent(null);
+      setSelectedTask(null);
       setReminderDate('');
       setReminderTime('');
       setReminderMessage('');
@@ -122,69 +128,70 @@ export default function EventReminderModal({ open, onClose, onSave }: EventRemin
           <FiX />
         </button>
         
-        <h2 className="text-lg font-semibold mb-6">Set Event Reminder</h2>
+        <h2 className="text-lg font-semibold mb-6">Set Task Reminder</h2>
         
-        {/* Existing Events List */}
+        {/* Existing Tasks List */}
         <div className="mb-8">
-          <h3 className="text-md font-medium mb-4 text-gray-700">Select an Event</h3>
+          <h3 className="text-md font-medium mb-4 text-gray-700">Select a Task</h3>
           {isLoading ? (
             <div className="text-center py-4">
               <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-indigo-500 mx-auto"></div>
-              <p className="text-gray-500 mt-2">Loading events...</p>
+              <p className="text-gray-500 mt-2">Loading tasks...</p>
             </div>
-          ) : userEvents.length > 0 ? (
+          ) : userTasks.length > 0 ? (
             <div className="space-y-3 max-h-60 overflow-y-auto">
-              {userEvents.map((event) => (
+              {userTasks.map((task) => (
                 <div
-                  key={event.id}
+                  key={task.id}
                   className={`flex items-center justify-between rounded-lg p-4 border cursor-pointer transition-all ${
-                    selectedEvent?.id === event.id
-                      ? 'bg-indigo-100 border-indigo-300 shadow-md'
-                      : 'bg-indigo-50 border-indigo-100 hover:bg-indigo-75'
+                    selectedTask?.id === task.id
+                      ? 'bg-yellow-100 border-yellow-300 shadow-md'
+                      : 'bg-yellow-50 border-yellow-100 hover:bg-yellow-75'
                   }`}
-                  onClick={() => setSelectedEvent(event)}
+                  onClick={() => setSelectedTask(task)}
                 >
                   <div className="flex-1">
                     <div className="flex items-center gap-2 mb-1">
-                      <FiCalendar className="text-indigo-500 text-sm" />
-                      <span className="font-semibold text-gray-800">{event.title}</span>
-                      {selectedEvent?.id === event.id && (
-                        <span className="text-xs bg-indigo-200 text-indigo-700 px-2 py-0.5 rounded-full">
+                      <FiCheckSquare className={`text-sm ${task.completed ? 'text-green-500' : 'text-yellow-500'}`} />
+                      <span className={`font-semibold ${task.completed ? 'line-through text-gray-500' : 'text-gray-800'}`}>
+                        {task.title}
+                      </span>
+                      {selectedTask?.id === task.id && (
+                        <span className="text-xs bg-yellow-200 text-yellow-700 px-2 py-0.5 rounded-full">
                           Selected
                         </span>
                       )}
+                      {task.priority && (
+                        <span className={`text-xs px-2 py-0.5 rounded-full border ${getPriorityColor(task.priority)}`}>
+                          {task.priority}
+                        </span>
+                      )}
                     </div>
-                    {event.description && (
-                      <p className="text-sm text-gray-600 mb-1">{event.description}</p>
+                    {task.description && (
+                      <p className="text-sm text-gray-600 mb-1">{task.description}</p>
                     )}
                     <div className="flex items-center gap-2 text-xs text-gray-500">
-                      <FiClock className="text-indigo-400" />
-                      <span>{formatEventDate(event.eventDate)}</span>
+                      <FiClock className="text-yellow-400" />
+                      <span>{formatTaskDate(task.date)}</span>
+                      {task.completed && (
+                        <span className="text-green-600 font-medium">Completed</span>
+                      )}
                     </div>
                   </div>
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handleDeleteEvent(event.id);
-                    }}
-                    className="text-gray-400 hover:text-red-500 transition-colors p-2"
-                    title="Delete event"
-                  >
-                    <FiTrash2 size={16} />
-                  </button>
                 </div>
               ))}
             </div>
           ) : (
             <div className="text-center py-4 text-gray-500 bg-gray-50 rounded-lg">
-              <FiCalendar className="text-gray-300 text-2xl mx-auto mb-2" />
-              <p>No events found</p>
+              <FiCheckSquare className="text-gray-300 text-2xl mx-auto mb-2" />
+              <p>No tasks found</p>
+              <p className="text-xs text-gray-300 mt-1">Create some tasks first to set reminders</p>
             </div>
           )}
         </div>
 
         {/* Reminder Settings Form */}
-        {selectedEvent && (
+        {selectedTask && (
           <>
             <div className="border-t border-gray-200 mb-6"></div>
             
@@ -198,13 +205,13 @@ export default function EventReminderModal({ open, onClose, onSave }: EventRemin
                   <div className="relative">
                     <input
                       type="date"
-                      className="w-full p-3 pl-10 border border-gray-200 rounded-lg bg-white/60 backdrop-blur focus:outline-none focus:ring-2 focus:ring-indigo-300 focus:border-indigo-400 transition shadow-sm"
+                      className="w-full p-3 pl-10 border border-gray-200 rounded-lg bg-white/60 backdrop-blur focus:outline-none focus:ring-2 focus:ring-yellow-300 focus:border-yellow-400 transition shadow-sm"
                       value={reminderDate}
                       onChange={e => setReminderDate(e.target.value)}
                       min={new Date().toISOString().split('T')[0]}
                       required
                     />
-                    <FiCalendar className="absolute left-3 top-1/2 -translate-y-1/2 text-indigo-400 pointer-events-none" size={20} />
+                    <FiCalendar className="absolute left-3 top-1/2 -translate-y-1/2 text-yellow-400 pointer-events-none" size={20} />
                   </div>
                 </div>
                 
@@ -215,12 +222,12 @@ export default function EventReminderModal({ open, onClose, onSave }: EventRemin
                   <div className="relative">
                     <input
                       type="time"
-                      className="w-full p-3 pl-10 border border-gray-200 rounded-lg bg-white/60 backdrop-blur focus:outline-none focus:ring-2 focus:ring-indigo-300 focus:border-indigo-400 transition shadow-sm"
+                      className="w-full p-3 pl-10 border border-gray-200 rounded-lg bg-white/60 backdrop-blur focus:outline-none focus:ring-2 focus:ring-yellow-300 focus:border-yellow-400 transition shadow-sm"
                       value={reminderTime}
                       onChange={e => setReminderTime(e.target.value)}
                       required
                     />
-                    <FiClock className="absolute left-3 top-1/2 -translate-y-1/2 text-indigo-400 pointer-events-none" size={20} />
+                    <FiClock className="absolute left-3 top-1/2 -translate-y-1/2 text-yellow-400 pointer-events-none" size={20} />
                   </div>
                 </div>
               </div>
@@ -230,11 +237,11 @@ export default function EventReminderModal({ open, onClose, onSave }: EventRemin
                   Reminder Message (Optional)
                 </label>
                 <textarea
-                  className="w-full p-3 border border-gray-200 rounded-lg bg-white/60 backdrop-blur focus:outline-none focus:ring-2 focus:ring-indigo-300 focus:border-indigo-400 transition shadow-sm placeholder-gray-400"
+                  className="w-full p-3 border border-gray-200 rounded-lg bg-white/60 backdrop-blur focus:outline-none focus:ring-2 focus:ring-yellow-300 focus:border-yellow-400 transition shadow-sm placeholder-gray-400"
                   value={reminderMessage}
                   onChange={e => setReminderMessage(e.target.value)}
                   rows={3}
-                  placeholder="Custom reminder message (leave empty to use event description)"
+                  placeholder="Custom reminder message (leave empty to use task description)"
                 />
               </div>
               
@@ -242,7 +249,7 @@ export default function EventReminderModal({ open, onClose, onSave }: EventRemin
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="px-5 py-2 bg-indigo-500 text-white rounded-lg hover:bg-indigo-600 transition-colors font-medium shadow-sm disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="px-5 py-2 bg-yellow-500 text-white rounded-lg hover:bg-yellow-600 transition-colors font-medium shadow-sm disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   {isSubmitting ? 'Setting Reminder...' : 'Set Reminder'}
                 </button>
@@ -253,4 +260,4 @@ export default function EventReminderModal({ open, onClose, onSave }: EventRemin
       </div>
     </ModalWrapper>
   );
-}
+} 

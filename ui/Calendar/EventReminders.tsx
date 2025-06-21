@@ -4,19 +4,8 @@ import { useState, useEffect } from 'react';
 import { FiTrash2, FiRefreshCw } from 'react-icons/fi';
 import { getUserReminders, deleteReminder } from '@/app/api/ReminderApi/ReminderApi';
 import { useUser } from '@/app/context/UserContext';
+import { Reminder } from '@/types/types';
 
-interface Reminder {
-  id: string;
-  userId: string;
-  title: string;
-  description?: string;
-  date: string;
-  time: string;
-  referenceType?: string;
-  referenceId?: string;
-  isActive: boolean;
-  createdAt: string;
-}
 
 export default function EventReminders({ onOpenEventReminderModal }: { onOpenEventReminderModal: () => void }) {
   const [reminders, setReminders] = useState<Reminder[]>([]);
@@ -30,7 +19,7 @@ export default function EventReminders({ onOpenEventReminderModal }: { onOpenEve
 
     try {
       setIsRefreshing(true);
-      const data = await getUserReminders(token);
+      const data: Reminder[] = await getUserReminders(token);
       setReminders(Array.isArray(data) ? data : []);
     } catch (error) {
       console.error('Error fetching reminders:', error);
@@ -72,6 +61,16 @@ export default function EventReminders({ onOpenEventReminderModal }: { onOpenEve
     });
   };
 
+  // Format time for display
+  const formatTime = (dateString: string) => {
+    const date = new Date(dateString);
+    return date.toLocaleTimeString('en-US', {
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: true
+    });
+  };
+
   return (
     <div>
       <div className="flex items-center justify-between mb-4">
@@ -98,18 +97,15 @@ export default function EventReminders({ onOpenEventReminderModal }: { onOpenEve
               <li key={reminder.id} className="flex flex-col sm:flex-row sm:justify-between sm:items-center bg-indigo-50 rounded-lg px-3 py-3 border border-indigo-100">
                 <div className="flex-1">
                   <div className="flex items-center gap-2 mb-1">
-                    <span className="font-semibold text-gray-800">{reminder.title}</span>
-                    {!reminder.isActive && (
+                    <span className="font-semibold text-gray-800">{reminder.message}</span>
+                    {!reminder.isReminded && (
                       <span className="text-xs bg-gray-100 text-gray-500 px-2 py-0.5 rounded-full">
                         Inactive
                       </span>
                     )}
                   </div>
-                  {reminder.description && (
-                    <p className="text-xs text-gray-600 mb-1">{reminder.description}</p>
-                  )}
                   <div className="text-xs text-gray-500">
-                    {formatDate(reminder.date)} at {reminder.time}
+                    {formatDate(reminder.date)} at {formatTime(reminder.date)}
                   </div>
                 </div>
                 <div className="flex items-center gap-2 mt-2 sm:mt-0">
