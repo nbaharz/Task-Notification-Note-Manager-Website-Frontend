@@ -1,15 +1,7 @@
 import { useState, useRef, useCallback } from 'react';
 import { arrayMove } from '@dnd-kit/sortable';
 import type { DragEndEvent } from '@dnd-kit/core';
-
-export interface Task {
-  id: number;
-  text: string;
-  completed: boolean;
-  description?: string;
-  priority?: 'high' | 'medium' | 'low';
-  date: string;
-}
+import type { Task } from '@/types/types';
 
 export function useToDo() {
   const [tasks, setTasks] = useState<Record<string, Task[]>>({});
@@ -39,8 +31,8 @@ export function useToDo() {
     if (!text.trim()) return;
     const dateStr = formatDate(selectedDate);
     const newTask: Task = {
-      id: Date.now(),
-      text: text.trim(),
+      id: '',
+      title: text.trim(),
       completed: false,
       date: dateStr
     };
@@ -53,7 +45,7 @@ export function useToDo() {
     inputRef.current?.focus();
   }, [selectedDate, formatDate]);
 
-  const toggleComplete = useCallback((id: number) => {
+  const toggleComplete = useCallback((id: string) => {
     const dateStr = formatDate(selectedDate);
     setTasks(prev => ({
       ...prev,
@@ -63,7 +55,7 @@ export function useToDo() {
     }));
   }, [selectedDate, formatDate]);
 
-  const deleteTask = useCallback((id: number) => {
+  const deleteTask = useCallback((id: string) => {
     const dateStr = formatDate(selectedDate);
     setTasks(prev => ({
       ...prev,

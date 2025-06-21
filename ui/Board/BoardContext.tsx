@@ -4,46 +4,27 @@ import NoteGrid from '@/ui/Note/NoteGrid';
 import ExternalServices from '@/ui/ExternalServices/ExternalService';
 import ToDoList from '@/ui/ToDoList/toDoList';
 import CalendarPanel from '@/ui/Calendar/CalendarPanel';
-import TrackedProductsModal from '@/ui/ExternalServices/TrackedProducts/TrackedProductsModal';
-import ModalWrapper from '@/ui/ModalWrapper';
-import {TrackedProduct } from '@/types/types';
 import EventBoardSection from '@/ui/Board/EventBoardSection'; // Import EventBoardSection
 
 
 interface Props {
   activeTab: string;
-  onOpenEventReminderModal?: () => void;
-  eventReminders?: any[];
+  onOpenEventReminderModal: () => void;
 }
 
 export default function BoardContent({
   activeTab,
   onOpenEventReminderModal,
-  eventReminders,
 }: Props) {
-  // Tracked Products Modal state ve storage
-  const [showTrackedProductsModal, setShowTrackedProductsModal] = useState(false);
-  const [savedProducts, setSavedProducts] = useState<TrackedProduct[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [showTrackedProducts, setShowTrackedProducts] = useState(false);
 
   useEffect(() => {
     const timer = setTimeout(() => {
-      const stored = localStorage.getItem('trackedProducts');
-      if (stored) {
-        setSavedProducts(JSON.parse(stored));
-      }
       setIsLoading(false);
     }, 200);
 
     return () => clearTimeout(timer);
   }, []);
-
-  useEffect(() => {
-    if (!isLoading) {
-      localStorage.setItem('trackedProducts', JSON.stringify(savedProducts));
-    }
-  }, [savedProducts, isLoading]);
 
   return (
     <div className="px-4 sm:px-6 lg:px-8 py-6">
@@ -56,12 +37,7 @@ export default function BoardContent({
         <div className={`${activeTab === 'external' ? 'block' : 'hidden'} md:block`}>
           <div className="h-full">
             <ExternalServices
-              onOpenTrackedProductsModal={() => setShowTrackedProductsModal(true)}
-              savedProducts={savedProducts}
-              setSavedProducts={setSavedProducts}
-              isLoading={isLoading}
-              showTrackedProducts={showTrackedProducts}
-              setShowTrackedProducts={setShowTrackedProducts}
+              onOpenTrackedProductsModal={() => {}}
             />
           </div>
         </div>
@@ -79,21 +55,10 @@ export default function BoardContent({
           <div className="h-full">
             <CalendarPanel
               onOpenEventReminderModal={onOpenEventReminderModal}
-              eventReminders={eventReminders}
             />
           </div>
         </div>
       </div>
-      {/* Modalı sayfa seviyesinde aç */}
-      {showTrackedProductsModal && (
-        <ModalWrapper onClose={() => setShowTrackedProductsModal(false)} maxWidth="max-w-md">
-          <TrackedProductsModal
-            savedProducts={savedProducts}
-            setSavedProducts={setSavedProducts}
-            onClose={() => setShowTrackedProductsModal(false)}
-          />
-        </ModalWrapper>
-      )}
     </div>
   );
 }

@@ -13,9 +13,7 @@ import EventReminderModal from '@/ui/Calendar/EventReminderModal';
 export default function NoteBoard() {
   const [activeTab, setActiveTab] = useState('notes');
   const [showViewModal, setShowViewModal] = useState(false);
-
   const [showEventReminderModal, setShowEventReminderModal] = useState(false);
-  const [eventReminders, setEventReminders] = useState<any[]>([]);
 
   const {
     setSelectedNote,
@@ -24,11 +22,6 @@ export default function NoteBoard() {
   const handleViewNote = (note: Note) => {
     setSelectedNote(note);
     setShowViewModal(true);
-  };
-
-  // Event Reminder kaydetme fonksiyonu
-  const handleSaveEventReminder = (event: any) => {
-    setEventReminders(prev => [...prev, { ...event, id: Date.now() }]);
   };
 
   return (
@@ -67,14 +60,16 @@ export default function NoteBoard() {
         <BoardTabs activeTab={activeTab} setActiveTab={setActiveTab} />
         <BoardContent
           activeTab={activeTab}
-          eventReminders={eventReminders}
           onOpenEventReminderModal={() => setShowEventReminderModal(true)}
         />
         <Modals />
         <EventReminderModal
           open={showEventReminderModal}
           onClose={() => setShowEventReminderModal(false)}
-          onSave={handleSaveEventReminder}
+          onSave={() => {
+            // This will be handled by the modal itself now
+            setShowEventReminderModal(false);
+          }}
         />
       </main>
       <Footer/>

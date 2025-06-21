@@ -4,8 +4,7 @@ import { motion } from 'framer-motion';
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import { Task } from '@/types/types';
-import { deleteTask as deleteTaskApi } from '@/app/api/TaskApi/DeleteTask';
-import { useUser } from '@/app/context/UserContext';
+
 
 interface TaskItemProps {
   task: Task;
@@ -57,7 +56,7 @@ export function TaskItem({ task, onToggleComplete, onDelete, onOpenModal }: Task
       initial={false}
       className={`relative bg-white rounded-2xl shadow-[0_2px_8px_rgb(0,0,0,0.08)] hover:shadow-[0_4px_12px_rgb(0,0,0,0.12)] border border-gray-100 overflow-hidden transition-all ${isDragging ? 'relative' : ''}`}
     >
-      <div className={`absolute top-0 left-0 w-full h-1 ${getPriorityColor(task.priority)}`} />
+      <div className={`absolute top-0 left-0 w-full h-2 ${getPriorityColor(task.priority)}`} />
       <div className="flex items-center p-3">
         <button
           onClick={() => onToggleComplete(task.title)}

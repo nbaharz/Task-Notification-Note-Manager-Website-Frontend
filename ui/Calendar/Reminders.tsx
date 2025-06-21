@@ -5,7 +5,7 @@ import ReminderTabs from './ReminderTabs';
 import EventReminders from './EventReminders';
 import TaskReminders from './TaskReminders';
 
-export default function Reminders({ onOpenEventReminderModal, eventReminders }: any) {
+export default function Reminders({ onOpenEventReminderModal }: { onOpenEventReminderModal: () => void }) {
   const [activeTab, setActiveTab] = useState<'event' | 'task'>('event');
 
   return (
@@ -14,7 +14,6 @@ export default function Reminders({ onOpenEventReminderModal, eventReminders }: 
       {activeTab === 'event' && (
         <EventReminders
           onOpenEventReminderModal={onOpenEventReminderModal}
-          eventReminders={eventReminders}
         />
       )}
       {activeTab === 'task' && <TaskReminders />}

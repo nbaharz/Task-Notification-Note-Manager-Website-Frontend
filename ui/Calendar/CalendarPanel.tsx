@@ -6,7 +6,7 @@ import CustomCalendar from './Calendar';
 import Reminders from './Reminders';
 import { FiChevronDown, FiChevronUp } from 'react-icons/fi';
 
-export default function CalendarPanel({ onOpenEventReminderModal, eventReminders }: any) {
+export default function CalendarPanel({ onOpenEventReminderModal }: { onOpenEventReminderModal: () => void }) {
   const [activeTab, setActiveTab] = useState<'calendar' | 'reminders'>('calendar');
   const [open, setOpen] = useState(true);
 
@@ -44,7 +44,6 @@ export default function CalendarPanel({ onOpenEventReminderModal, eventReminders
             {activeTab === 'reminders' && (
               <Reminders
                 onOpenEventReminderModal={onOpenEventReminderModal}
-                eventReminders={eventReminders}
               />
             )}
           </>

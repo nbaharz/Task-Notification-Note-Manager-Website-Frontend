@@ -123,6 +123,7 @@ export function TaskList() {
                 <TaskItem
                   key={task.id}
                   task={task}
+                  
                   onToggleComplete={() => handleToggleComplete(task.id!)}
                   onDelete={() => handleDelete(task.id!)}
                   onOpenModal={handleOpenModal}

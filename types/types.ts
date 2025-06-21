@@ -22,9 +22,11 @@ export type Priority = 'high' | 'medium' | 'low';
 
 export type TrackedProduct = {
   id: string;
-  title: string;
-  productUrl: string;
-  recentPrice: string;
+  productTitle: string; // Was 'title'
+  url: string; // Was 'productUrl'
+  currentPrice: number | string; // Was 'recentPrice'
+  priceSaving: string;
+  productRating: string;
   isDiscounted: boolean;
   lastFetchTime: string;
   notifyOnDiscount: boolean;
@@ -38,6 +40,7 @@ export interface Event {
   eventDate: string; // ISO string olarak tutulur (DateTime -> string)
   referenceType: string; // veya enum olarak ReferenceType.Event
 }
+
 
 
 

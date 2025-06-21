@@ -29,29 +29,29 @@ export default function EventInput() {
   };
 
   return (
-    <div className="w-full">
-      <div className="flex flex-col sm:flex-row gap-2 w-full max-w-none">
-        <div className="flex-1 relative w-full max-w-none">
+    <div className="pt-4 relative">
+      <div className="flex flex-col sm:flex-row gap-3 w-full">
+        <div className="flex-1 relative">
           <input
-            className="w-full max-w-none border-2 border-pink-200 rounded-lg px-4 py-2 pr-10 focus:outline-none focus:border-pink-400 transition"
+            className="w-full border-b border-gray-200 focus:outline-none focus:border-amber-500 rounded-t-lg bg-white/50 px-4 py-3 pr-10"
             placeholder="Event title"
             value={title}
             onChange={e => setTitle(e.target.value)}
             maxLength={40}
             disabled
           />
-          <FiCalendar className="absolute right-3 top-3 text-pink-300" />
+          <FiCalendar className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400" />
         </div>
         <input
           type="date"
-          className="w-full max-w-none border-2 border-pink-200 rounded-lg px-4 py-2 focus:outline-none focus:border-pink-400 transition"
+          className="w-full sm:w-48 border-b border-gray-200 focus:outline-none focus:border-amber-500 rounded-t-lg bg-white/50 px-4 py-3"
           value={date}
           onChange={e => setDate(e.target.value)}
           disabled
         />
         <input
           type="text"
-          className="w-full max-w-none border-2 border-pink-200 rounded-lg px-4 py-2 focus:outline-none focus:border-pink-400 transition"
+          className="w-full sm:w-64 border-b border-gray-200 focus:outline-none focus:border-amber-500 rounded-t-lg bg-white/50 px-4 py-3"
           placeholder="Description"
           value={description}
           onChange={e => setDescription(e.target.value)}
@@ -59,10 +59,10 @@ export default function EventInput() {
         />
         <button
           type="button"
-          className="flex items-center gap-2 bg-pink-500 text-white px-4 py-2 rounded-lg font-semibold shadow hover:bg-pink-600 transition min-w-[80px] w-full sm:w-auto"
+          className="flex items-center justify-center gap-2 bg-amber-500 text-white px-4 py-3 rounded-lg font-semibold shadow hover:bg-amber-600 transition min-w-[100px] w-full sm:w-auto"
           onClick={() => setModalOpen(true)}
         >
-          <FiPlus /> Add
+          <FiPlus className="text-lg" /> Add
         </button>
       </div>
       <EventCreateModal open={modalOpen} onClose={() => setModalOpen(false)} />
