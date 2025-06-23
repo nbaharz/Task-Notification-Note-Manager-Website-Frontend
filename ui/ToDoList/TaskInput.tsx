@@ -28,7 +28,7 @@ export function TaskInput() {
     const newTask: Task = {
       id: Date.now().toString(), // benzersiz id
       title: value.trim(),
-      completed: false,
+      iscompleted: false,
       date: new Date().toISOString().split('T')[0],
       description: '',
       priority: 'medium',
@@ -49,10 +49,10 @@ export function TaskInput() {
     const newTask: Task = {
       id: '',
       title: '',
-      completed: false,
+      iscompleted: false,
       date: new Date().toISOString().split('T')[0],
       description: '',
-      priority: 'medium',
+      priority: '',
     };
     setSelectedTask(newTask);
     openModal('taskDetail');

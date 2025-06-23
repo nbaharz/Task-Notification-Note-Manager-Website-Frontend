@@ -22,6 +22,7 @@ import TaskSkeleton from './ToDoListSkeleton';
 import { useState, useEffect } from 'react';
 import { deleteTask as deleteTaskApi } from '@/app/api/TaskApi/DeleteTask';
 import { useUser } from '@/app/context/UserContext';
+import { updateTask as updateTaskApi } from '@/app/api/TaskApi/Update';
 
 export function TaskList() {
   const { tasks, updateTask, removeTask, setSelectedTask } = useToDo();
@@ -36,10 +37,15 @@ export function TaskList() {
     setIsMounted(true);
   }, [tasks]);
 
-  const handleToggleComplete = (id: string) => {
-    const task = tasks.find(t => t.title === id);
-    if (task) {
-      updateTask({ ...task, completed: !task.completed });
+  const handleToggleComplete = async (id: string) => {
+    const task = tasks.find(t => t.id === id);
+    if (task && token) {
+      try {
+        await updateTaskApi({ ...task, iscompleted: !task.iscompleted }, token);
+        updateTask({ ...task, iscompleted: !task.iscompleted });
+      } catch (e) {
+        alert('Görev güncellenemedi.');
+      }
     }
   };
 
@@ -123,7 +129,6 @@ export function TaskList() {
                 <TaskItem
                   key={task.id}
                   task={task}
-                  
                   onToggleComplete={() => handleToggleComplete(task.id!)}
                   onDelete={() => handleDelete(task.id!)}
                   onOpenModal={handleOpenModal}

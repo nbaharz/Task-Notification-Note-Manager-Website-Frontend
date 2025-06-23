@@ -1,5 +1,3 @@
-import { Task } from '@/types/types';
-
 export const deleteTask = async (id: string, token: string) => {
   const res = await fetch(`https://localhost:7117/api/ToDo/Delete/${id}`, {
     method: 'DELETE',

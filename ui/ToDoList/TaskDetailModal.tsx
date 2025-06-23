@@ -8,18 +8,11 @@ import { useModal } from '@/app/context/ModalContext';
 import { Task, Priority } from '@/types/types';
 import { useUser } from '@/app/context/UserContext';
 import { createTask } from '@/app/api/TaskApi/CreateTask';
+import { updateTask as updateTaskApi } from '@/app/api/TaskApi/Update';
+import { getPriorityColor } from './getPriorityColor';
 
-const priorityOptions: Priority[] = ['high', 'medium', 'low'];
 
-const getPriorityColor = (priority?: string) => {
-  const colors = {
-    high: 'bg-rose-600/80',
-    medium: 'bg-cyan-600',
-    low: 'bg-emerald-600',
-    default: 'bg-gray-400',
-  };
-  return priority ? colors[priority as Priority] : colors.default;
-};
+const priorityOptions: Priority[] = ['High', 'Medium', 'Low'];
 
 export default function TaskDetailModal() {
   const { selectedTask, setSelectedTask, addTask, updateTask, tasks, refreshTasks } = useToDo();
@@ -54,8 +47,14 @@ export default function TaskDetailModal() {
         setError('Görev oluşturulamadı.');
       }
     } else {
-      updateTask(toDo);
-      await refreshTasks(); // Task güncellendikten sonra da güncel listeyi çek
+      if (!token) return;
+      try {
+        await updateTaskApi(toDo, token);
+        await refreshTasks();
+      } catch (e) {
+        setError('Görev güncellenemedi.');
+        return;
+      }
     }
     setSelectedTask(null);
     closeModal();
@@ -125,7 +124,7 @@ export default function TaskDetailModal() {
             onClick={handleSaveAndClose}
             className="px-5 py-2 border border-gray-300 rounded-lg text-gray-700/90 hover:bg-gray-50 transition-colors font-medium shadow-sm"
           >
-            Save Changes
+            Save
           </button>
         </div>
       </div>

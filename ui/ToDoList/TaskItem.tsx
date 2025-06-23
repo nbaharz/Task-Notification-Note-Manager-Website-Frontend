@@ -4,6 +4,8 @@ import { motion } from 'framer-motion';
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import { Task } from '@/types/types';
+import { getPriorityColor } from './getPriorityColor';
+
 
 
 interface TaskItemProps {
@@ -13,14 +15,7 @@ interface TaskItemProps {
   onOpenModal: (task: Task) => void;
 }
 
-const getPriorityColor = (priority?: string) => {
-  switch (priority) {
-    case 'high': return 'bg-rose-600/80';
-    case 'medium': return 'bg-cyan-500';
-    case 'low': return 'bg-emerald-600';
-    default: return 'bg-gray-400/80';
-  }
-};
+
 
 const formatTaskDate = (dateStr: string) => {
   const date = new Date(dateStr);
@@ -56,16 +51,16 @@ export function TaskItem({ task, onToggleComplete, onDelete, onOpenModal }: Task
       initial={false}
       className={`relative bg-white rounded-2xl shadow-[0_2px_8px_rgb(0,0,0,0.08)] hover:shadow-[0_4px_12px_rgb(0,0,0,0.12)] border border-gray-100 overflow-hidden transition-all ${isDragging ? 'relative' : ''}`}
     >
-      <div className={`absolute top-0 left-0 w-full h-2 ${getPriorityColor(task.priority)}`} />
+      <div className={`h-2 ${getPriorityColor(task.priority)}`} />
       <div className="flex items-center p-3">
         <button
-          onClick={() => onToggleComplete(task.title)}
+          onClick={() => onToggleComplete(task.id!)}
           className={`w-5 h-5 flex-shrink-0 flex items-center justify-center rounded-full border mr-3 transition-colors ${
-            task.completed ? 'bg-indigo-500 border-indigo-500' : 'border-gray-300 hover:border-indigo-300'
+            task.iscompleted ? 'bg-indigo-500 border-indigo-500' : 'border-gray-300 hover:border-indigo-300'
           }`}
-          aria-label={task.completed ? 'Mark as incomplete' : 'Mark as complete'}
+          aria-label={task.iscompleted ? 'Mark as incomplete' : 'Mark as complete'}
         >
-          {task.completed && <FiCheck className="text-white text-xs" />}
+          {task.iscompleted && <FiCheck className="text-white text-xs" />}
         </button>
 
         <div 
@@ -73,7 +68,7 @@ export function TaskItem({ task, onToggleComplete, onDelete, onOpenModal }: Task
           onClick={() => onOpenModal(task)}
         >
           <span className={`block break-words whitespace-pre-wrap text-left w-full min-w-0 text-sm ${
-            task.completed ? 'line-through text-gray-400' : 'text-gray-700'
+            task.iscompleted ? 'line-through text-gray-400' : 'text-gray-700'
           }`}>
             {task.title}
           </span>

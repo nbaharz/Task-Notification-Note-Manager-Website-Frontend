@@ -9,7 +9,7 @@ export interface Note {
 export interface Task {
   id?: string;
   title: string;
-  completed: boolean;
+  iscompleted: boolean;
   description?: string;
   priority?: string;
   date: string;
@@ -17,7 +17,7 @@ export interface Task {
   referenceType?: string;
 }
 
-export type Priority = 'high' | 'medium' | 'low';
+export type Priority = 'High' | 'Medium' | 'Low';
 
 
 export type TrackedProduct = {
