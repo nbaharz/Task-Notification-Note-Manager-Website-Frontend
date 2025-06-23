@@ -4,12 +4,13 @@ import { useState, useRef, useEffect } from 'react';
 import Calendar from 'react-calendar';
 import { motion, AnimatePresence } from 'framer-motion';
 import './Calendar.css';
+import { useEvent } from '@/app/context/EventContext';
 
 export default function CustomCalendar() {
   const [date, setDate] = useState<Date | null>(new Date());
   const [showCalendar, setShowCalendar] = useState(true);
-  const [lastLeftClicked, setLastLeftClicked] = useState<Date | null>(null);
-  const [showCreateEventFor, setShowCreateEventFor] = useState<Date | null>(null);
+  const { events } = useEvent();
+  const [hoveredDay, setHoveredDay] = useState<Date | null>(null);
 
   function isSameDay(a: Date | null, b: Date | null) {
     if (!a || !b) return false;
@@ -20,23 +21,12 @@ export default function CustomCalendar() {
     );
   }
 
-  function handleContextMenu(e: React.MouseEvent, tileDate: Date) {
-    e.preventDefault();
-    if (isSameDay(lastLeftClicked, tileDate)) {
-      setShowCreateEventFor(tileDate);
-    } else {
-      setShowCreateEventFor(null);
-    }
-  }
-
-  function handleLeftClick(tileDate: Date) {
-    setLastLeftClicked(tileDate);
-    setShowCreateEventFor(null);
-  }
-
-  function handleCreateEventClick(tileDate: Date) {
-    alert(`${tileDate.toLocaleDateString()} için etkinlik oluştur!`);
-    setShowCreateEventFor(null);
+  // Helper: get events for a specific day
+  function getEventsForDay(day: Date) {
+    return events.filter(event => {
+      const eventDate = new Date(event.eventDate);
+      return isSameDay(eventDate, day);
+    });
   }
 
   return (
@@ -73,75 +63,48 @@ export default function CustomCalendar() {
                   if (view !== 'month') return null;
                   const dayOfWeek = tileDate.getDay();
                   const openLeft = dayOfWeek >= 5;
-
+                  const dayEvents = getEventsForDay(tileDate);
                   return (
-                    <div style={{ position: 'relative', width: '100%', height: '100%' }}>
-                      <div
-                        style={{
-                          position: 'absolute',
-                          top: 0,
-                          left: 0,
-                          width: '100%',
-                          height: '100%',
-                          zIndex: 10,
-                          background: 'transparent',
-                          cursor: isSameDay(showCreateEventFor, tileDate) ? 'default' : 'pointer',
-                        }}
-                        onClick={() => handleLeftClick(tileDate)}
-                        onContextMenu={(e) => handleContextMenu(e, tileDate)}
-                      />
-                      {isSameDay(showCreateEventFor, tileDate) && (
+                    <div
+                      style={{ position: 'relative', width: '100%', height: '100%' }}
+                      onMouseEnter={() => dayEvents.length > 0 && setHoveredDay(tileDate)}
+                      onMouseLeave={() => setHoveredDay(null)}
+                    >
+                      {/* Event marker */}
+                      {dayEvents.length > 0 && (
+                        <div style={{ position: 'absolute', bottom: 4, left: '50%', transform: 'translateX(-50%)', zIndex: 15 }}>
+                          <span style={{ display: 'inline-block', width: 8, height: 8, borderRadius: '50%', background: '#6366f1' }} />
+                        </div>
+                      )}
+                      {/* Event tooltip on hover, positioned left or right */}
+                      {dayEvents.length > 0 && hoveredDay && isSameDay(hoveredDay, tileDate) && (
                         <div
-                          role="button"
-                          tabIndex={0}
                           style={{
                             position: 'absolute',
                             top: '50%',
                             left: openLeft ? 'auto' : '100%',
                             right: openLeft ? '100%' : 'auto',
                             transform: 'translateY(-50%)',
-                            zIndex: 20,
-                            background: '#6d28d9',
-                            color: '#fff',
-                            borderRadius: '14px',
-                            padding: '6px 20px',
-                            fontSize: '1rem',
-                            fontWeight: 500,
-                            boxShadow: '0 4px 16px rgba(109,40,217,0.1)',
+                            background: '#fff',
+                            color: '#333',
+                            border: '1px solid #e5e7eb',
+                            borderRadius: 6,
+                            boxShadow: '0 2px 8px rgba(0,0,0,0.08)',
+                            padding: '4px 8px',
+                            fontSize: 12,
+                            marginLeft: openLeft ? undefined : 8,
+                            marginRight: openLeft ? 8 : undefined,
+                            zIndex: 30,
+                            minWidth: 80,
+                            maxWidth: 160,
                             whiteSpace: 'nowrap',
-                            display: 'flex',
-                            alignItems: 'center',
-                            gap: '8px',
-                            cursor: 'pointer',
-                            userSelect: 'none',
-                          }}
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            handleCreateEventClick(tileDate);
-                          }}
-                          onKeyDown={(e) => {
-                            if (e.key === 'Enter' || e.key === ' ') {
-                              e.preventDefault();
-                              handleCreateEventClick(tileDate);
-                            }
                           }}
                         >
-                          <span
-                            style={{
-                              position: 'absolute',
-                              left: openLeft ? 'auto' : '-12px',
-                              right: openLeft ? '-12px' : 'auto',
-                              top: '50%',
-                              transform: 'translateY(-50%)',
-                              width: 0,
-                              height: 0,
-                              borderTop: '8px solid transparent',
-                              borderBottom: '8px solid transparent',
-                              borderLeft: openLeft ? '8px solid #6d28d9' : 'none',
-                              borderRight: !openLeft ? '8px solid #6d28d9' : 'none',
-                            }}
-                          />
-                          Create Event
+                          {dayEvents.map(ev => (
+                            <div key={ev.id} style={{ overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                              {ev.title}
+                            </div>
+                          ))}
                         </div>
                       )}
                     </div>

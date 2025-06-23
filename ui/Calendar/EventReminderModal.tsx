@@ -75,30 +75,27 @@ export default function EventReminderModal({ open, onClose, onSave }: EventRemin
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!selectedEvent || !reminderDate || !reminderTime) return;
-
+  
     try {
       setIsSubmitting(true);
-      
-      // Combine date and time into ISO string
-      const combinedDateTime = new Date(`${reminderDate}T${reminderTime}`).toISOString();
-      
-      // Create reminder data
+  
+      // ⛏️ Fix: Ensure valid time format
+      const combinedDateTime = new Date(`${reminderDate}T${reminderTime}:00`).toISOString();
+  
       const reminderData = {
         message: reminderMessage || selectedEvent.description,
-        date: combinedDateTime,
+        reminderTime: combinedDateTime,
         referenceType: 'Event',
         referenceId: selectedEvent.id
       };
-
+  
       await setReminder(reminderData, token!);
-      
-      // Reset form
+  
       setSelectedEvent(null);
       setReminderDate('');
       setReminderTime('');
       setReminderMessage('');
-      
-      // Close modal and notify parent
+  
       onSave?.();
       onClose();
     } catch (error) {
@@ -107,6 +104,8 @@ export default function EventReminderModal({ open, onClose, onSave }: EventRemin
       setIsSubmitting(false);
     }
   };
+  
+  
 
   if (!open) return null;
 

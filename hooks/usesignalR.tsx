@@ -5,7 +5,7 @@ export function useSignalR(token: string, onNotificationReceived: (message: any)
   const connectionRef = useRef<signalR.HubConnection | null>(null);
 
   const stableHandler = useCallback((notification: any) => {
-    console.log("📩 Notification geldi:", notification);
+    console.log("📩 Notification received:", notification);
     onNotificationReceived(notification);
   }, [onNotificationReceived]);
 

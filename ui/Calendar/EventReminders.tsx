@@ -19,8 +19,15 @@ export default function EventReminders({ onOpenEventReminderModal }: { onOpenEve
 
     try {
       setIsRefreshing(true);
-      const data: Reminder[] = await getUserReminders(token);
-      setReminders(Array.isArray(data) ? data : []);
+      const data: any[] = await getUserReminders(token);
+      // Map reminderTime to date for compatibility
+      const mapped = Array.isArray(data)
+        ? data.map((reminder) => ({
+            ...reminder,
+            date: reminder.date || reminder.reminderTime, // fallback to reminderTime if date is missing
+          }))
+        : [];
+      setReminders(mapped);
     } catch (error) {
       console.error('Error fetching reminders:', error);
       setReminders([]);

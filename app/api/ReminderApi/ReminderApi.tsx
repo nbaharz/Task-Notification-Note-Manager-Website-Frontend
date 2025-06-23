@@ -1,11 +1,14 @@
 // Reminder API endpoints
 // Reminder oluştur
-export const setReminder = async (reminderData: {
-  message: string;
-  date: string; // ISO string format
-  referenceType?: string;
-  referenceId?: string;
-}, token: string) => {
+export const setReminder = async (
+  reminderData: {
+    message: string;
+    reminderTime: string; // ISO string
+    referenceType: string;
+    referenceId: string;
+  },
+  token: string
+) => {
   const res = await fetch('https://localhost:7117/api/Reminder/SetReminder', {
     method: 'POST',
     headers: {
@@ -22,6 +25,7 @@ export const setReminder = async (reminderData: {
 
   return res.json();
 };
+
 
 // Kullanıcının reminderlarını getir
 export const getUserReminders = async (token: string) => {
