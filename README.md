@@ -26,4 +26,4 @@ The application uses a component-based design that takes advantage of capabiliti
 
 **Responsive design** for various screen resolutions is achieved using Tailwind CSS properties. Load skeletons are applied to the components such as To-Do Lists and Note Grid, and when the user refreshes the page, the skeletons are shown to the user until the rendering process is done. This is a strategy used by most popular applications such as Youtube, in modern web technologies.
 
-**Security issues **are solved by storing tokens only in HTTP cookies to prevent cross-site Decryption (XSS) attacks. All API requests are verified and protected using Carrier tokens.
+**Security issues** are solved by storing tokens only in HTTP cookies to prevent cross-site Decryption (XSS) attacks. All API requests are verified and protected using Carrier tokens.
