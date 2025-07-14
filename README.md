@@ -14,7 +14,7 @@ In summary, the goal of this project is to combine daily activities such as task
 ## Frontend Architecture
 The application uses a component-based design that takes advantage of capabilities of NextJs. The distinct responsibilities of each component support readability, scalability, and sustainability.
  
-- **Pages: **Route-based components are defined in the /app folder using the Next.js App Router. For every page in the website there is a folder in the app folder such as Board and Home. In each of those folders there are page.tsx files that create the website url paths /Home and /Board.
+- **Pages:** Route-based components are defined in the /app folder using the Next.js App Router. For every page in the website there is a folder in the app folder such as Board and Home. In each of those folders there are page.tsx files that create the website url paths /Home and /Board.
 - **Components:** Reusable UI items such as modals, navigation bar, and footer components /ui directory. These components are divided according to their responsibilities for later use in the page context and are accessed from the /ui folder and the code repetition is transmitted to it instead of redefining it in different places when necessary.
 - **Context:** React Context API is used to state managements of components, this allows reaching common states from different components through centralized structure.
 - **API Layer & Abstractions:** All API interactions are managed in the /api directory. For every controller in the backend structure, an API endpoint folder is created, and related endpoint files are created inside.
