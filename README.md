@@ -1,6 +1,6 @@
-## ABOARD: Task, Notification & Note Manager Website
+# ABOARD: Task, Notification & Note Manager Website
 
-# Definition and Aim of The Project
+## Definition and Aim of The Project
 The goal of this project is to create a rich web application that includes time management, task planning, note-taking, notification management, and personal tracking.
 
 The main features of the website are taking short daily notes, creating to-do lists, and setting reminders for events, appointments, or tasks. These properties are designed to help individuals manage both their personal and professional lives in a more organized and structured manner.
@@ -11,7 +11,7 @@ The external services infrastructure will be expanded in the future with new ext
 
 In summary, the goal of this project is to combine daily activities such as task management, note taking, reminder setting, and information collection from various external sources into a single unified and efficient digital interface rather than providing separate services, thereby reducing the user's mental burden.
 
-# Frontend Architecture
+## Frontend Architecture
 The application uses a component-based design that takes advantage of capabilities of NextJs. The distinct responsibilities of each component support readability, scalability, and sustainability.
  
 - **Pages: **Route-based components are defined in the /app folder using the Next.js App Router. For every page in the website there is a folder in the app folder such as Board and Home. In each of those folders there are page.tsx files that create the website url paths /Home and /Board.
